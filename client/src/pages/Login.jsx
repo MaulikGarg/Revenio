@@ -36,7 +36,7 @@ const Login = () => {
   return (
     <div className="flex justify-center align-center items-center">
       <div>
-        <h1>Campus Crate</h1>
+        <h1>Revenio</h1>
         <p>Sign in with college mail to continue</p>
         <div ref={loginbtnref}></div>
       </div>

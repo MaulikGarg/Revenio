@@ -2,6 +2,7 @@ import Login from "./pages/Login";
 import { useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Routes, Route, Navigate } from "react-router-dom";
+import PostLostItem from "./pages/PostLostItem";
 
 function App() {
   const { user, loading } = useAuth();
@@ -21,6 +22,16 @@ function App() {
         element={
           <ProtectedRoute>
             <p>Placeholder lost page</p>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Post lost items */}
+      <Route
+        path="/post-lost"
+        element={
+          <ProtectedRoute>
+            <PostLostItem />
           </ProtectedRoute>
         }
       />
