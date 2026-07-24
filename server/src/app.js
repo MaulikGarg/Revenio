@@ -10,6 +10,8 @@ const reportRoutes = require("./routes/report.routes");
 const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
+// '*' for wildcard if client url doesnt load
+app.use(cors({ origin: process.env.CLIENT_URL || "*", credentials: true }));
 app.use(express.json());
 app.use(morgan("dev"));
 
