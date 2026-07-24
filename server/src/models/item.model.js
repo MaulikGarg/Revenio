@@ -11,7 +11,7 @@ const itemSchema = new mongoose.Schema(
       enum: ["ID Card", "Bottle", "Electronics", "Book", "Bag", "Other"],
       required: true,
     },
-    foundLocation: { type: String, required: true },
+    location: { type: String, required: true },
     date: { type: Date, required: true },
     photoUrl: { type: String },
     // active means either its been found but unclaimed, or looking
