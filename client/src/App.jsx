@@ -1,16 +1,53 @@
 import Login from "./pages/Login";
 import { useAuth } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
-  const { user, login, logout, loading } = useAuth();
-  if (loading) return <p className="flex justify-center items-center"></p>;
-  if (!user) return <Login />;
+  const { user, loading } = useAuth();
+  if (loading) return <p>Loading...</p>;
+
   return (
-    <div>
-      <h1>Welcome, {user.name}</h1>
-      <p>Role: {user.role}</p>
-      <button onClick={logout}>Logout</button>
-    </div>
+    <Routes>
+      {/*If user exists then lost page otherwise login page*/}
+      <Route
+        path="/login"
+        element={user ? <Navigate to="/dashboard/lost" replace /> : <Login />}
+      />
+
+      {/*The lost item page*/}
+      <Route
+        path="/dashboard/lost"
+        element={
+          <ProtectedRoute>
+            <p>Placeholder lost page</p>
+          </ProtectedRoute>
+        }
+      />
+
+      {/*The found item page */}
+      <Route
+        path="/dashboard/found"
+        element={
+          <ProtectedRoute>
+            <p>Placeholder found page</p>
+          </ProtectedRoute>
+        }
+      />
+
+      {/*The admin panel*/}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute adminOnly>
+            <p>Placeholder admin panel</p>
+          </ProtectedRoute>
+        }
+      />
+
+      {/*All other non existent routes go to /lost*/}
+      <Route path="*" element={<Navigate to="/dashboard/lost" replace />} />
+    </Routes>
   );
 }
 
