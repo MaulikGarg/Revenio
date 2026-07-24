@@ -59,7 +59,7 @@ const getReports = async (req, res, next) => {
 const updateReportStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
-    const validStatues = ["reviewed", "dismissed"];
+    const validStatuses = ["reviewed", "dismissed"];
 
     if (!validStatuses.includes(status)) {
       return res
