@@ -1,6 +1,6 @@
 // this file holds login state
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
 
 const AuthContext = createContext();
 
