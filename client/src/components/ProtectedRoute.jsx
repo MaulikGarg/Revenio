@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 // wrapper to check if user exists
-const protectedRoute = ({ children, adminOnly = false }) => {
+const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -14,10 +14,10 @@ const protectedRoute = ({ children, adminOnly = false }) => {
   }
 
   if (adminOnly && user.role !== "admin") {
-    return <Naviage to="/dashboard/lost" replace />;
+    return <Navigate to="/dashboard/lost" replace />;
   }
 
   return children;
 };
 
-export default protectedRoute;
+export default ProtectedRoute;

@@ -34,10 +34,9 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center align-center items-center">
+    <div className="flex justify-center items-start mt-10 min-h-screen bg-canvas">
       <div>
-        <h1>Revenio</h1>
-        <p>Sign in with college mail to continue</p>
+        <p className="text-subtext">Sign in with college mail to continue</p>
         <div ref={loginbtnref}></div>
       </div>
     </div>
