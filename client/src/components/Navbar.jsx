@@ -13,7 +13,7 @@ const Navbar = () => {
       <div>
         <Link
           to={user ? "/dashboard/lost" : "/login"}
-          className="text-xl sm:text-2xl font-bold font-pixel"
+          className="text-xl sm:text-2xl md:text-3xl font-bold font-pixel"
         >
           Revenio
         </Link>

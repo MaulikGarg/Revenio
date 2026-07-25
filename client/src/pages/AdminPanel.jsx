@@ -95,9 +95,7 @@ const AdminPanel = () => {
 
   return (
     <PageContainer maxWidth="max-w-4xl" className="py-6">
-      <h1 className="text-4xl font-heading text-texexplanit mb-6">
-        The Admin Panel
-      </h1>
+      <h1 className="text-4xl font-heading text-text mb-6">The Admin Panel</h1>
 
       <div className="flex gap-2 mb-6 border-b border-overlay">
         <button
@@ -136,29 +134,33 @@ const AdminPanel = () => {
           {!usersLoading && users.length > 0 && (
             <div className="flex flex-col gap-2">
               {users.map((u) => {
-                <div
-                  key={u._id}
-                  className="flex items-center justify-between border border-overlay rounded-lg p-3"
-                >
-                  <div>
-                    <p className="text-text font-medium">{u.name}</p>
-                    <p className="text-xs text-subtext">{u.email}</p>
-                    <p className="text-xs text-subtext capitalize">{u.role}</p>
-                  </div>
+                return (
+                  <div
+                    key={u._id}
+                    className="flex items-center justify-between border border-overlay rounded-lg p-3"
+                  >
+                    <div>
+                      <p className="text-text font-medium">{u.name}</p>
+                      <p className="text-xs text-subtext">{u.email}</p>
+                      <p className="text-xs text-subtext capitalize">
+                        {u.role}
+                      </p>
+                    </div>
 
-                  {u._id !== currentUser.id && (
-                    <button
-                      onClick={() => handleToggleBlock(u._id, u.blocked)}
-                      className={`text-xs px-3 py-1 rounded-lg transition-colors ${
-                        u.blocked
-                          ? "bg-success/20 text-success hover:bg-success/30"
-                          : "bg-error/20 text-error hover:bg-error/30"
-                      }`}
-                    >
-                      {u.blocked ? "Unblock" : "Block"}
-                    </button>
-                  )}
-                </div>;
+                    {u._id !== currentUser.id && (
+                      <button
+                        onClick={() => handleToggleBlock(u._id, u.blocked)}
+                        className={`text-xs px-3 py-1 rounded-lg transition-colors ${
+                          u.blocked
+                            ? "bg-success/20 text-success hover:bg-success/30"
+                            : "bg-error/20 text-error hover:bg-error/30"
+                        }`}
+                      >
+                        {u.blocked ? "Unblock" : "Block"}
+                      </button>
+                    )}
+                  </div>
+                );
               })}
             </div>
           )}

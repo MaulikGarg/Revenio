@@ -253,7 +253,7 @@ export const ItemDetail = () => {
 
         {/* if item is already claimed */}
         {!isPoster && !isAdmin && item.status !== "active" && (
-          <p className="text-subtext">This item is already {item.status}.</p>
+          <p className="text-error">This item is already {item.status}.</p>
         )}
 
         {canClaim && !claimSuccess && (

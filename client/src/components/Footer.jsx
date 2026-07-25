@@ -8,7 +8,9 @@ const Footer = () => {
         className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-subtext"
       >
         <p>© {new Date().getFullYear()} Revenio.</p>
-        <p>Made by maulik</p>
+        <a href="https://github.com/MaulikGarg" target="_blank">
+          Made by maulik
+        </a>
       </PageContainer>
     </footer>
   );
