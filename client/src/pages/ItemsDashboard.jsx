@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import PageContainer from "../components/PageContainer";
 
 import {
   IdCard,
@@ -75,12 +76,12 @@ export const ItemsDashboard = ({ type = "lost" }) => {
   const postLabel = isLost ? "Post Lost Item" : "Post Found Item";
 
   return (
-    <div className="max-w-5xl mx-auto p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-6">
+    <PageContainer maxWidth="max-w-6xl" className="py-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <h1 className="text-4xl font-heading text-text">{title}</h1>
         <Link
           to={postLink}
-          className="flex items-center gap-1 bg-accent-500 text-white hover:bg-accent-600 px-4 py-2 rounded-lg text-sm font-medium"
+          className="flex items-center justify-center gap-1 bg-accent-500 text-white hover:bg-accent-600 px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto"
         >
           <Plus size={16} />
           {postLabel}
@@ -98,7 +99,7 @@ export const ItemsDashboard = ({ type = "lost" }) => {
             placeholder={placeholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="border border-overlay bg-surface text-text placeholder-subtext p-2 pl-9 rounded-lg flex-1 transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+            className="border border-overlay bg-surface text-text placeholder-subtext p-2 pl-9 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
           />
         </div>
 
@@ -169,7 +170,7 @@ export const ItemsDashboard = ({ type = "lost" }) => {
           ))}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

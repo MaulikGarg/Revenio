@@ -6,13 +6,14 @@ import PostItemForm from "./pages/PostItemForm";
 import ItemDetail from "./pages/ItemDetail";
 import Navbar from "./components/Navbar";
 import ItemsDashboard from "./pages/ItemsDashboard";
+import Footer from "./components/Footer";
 
 function App() {
   const { user, loading } = useAuth();
   if (loading) return <p className="text-text text-center mt-10">Loading...</p>;
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       <Routes>
         {/*If user exists then lost page otherwise login page*/}
@@ -76,7 +77,8 @@ function App() {
         {/*All other non existent routes go to /lost*/}
         <Route path="*" element={<Navigate to="/dashboard/lost" replace />} />
       </Routes>
-    </>
+      <Footer />
+    </div>
   );
 }
 

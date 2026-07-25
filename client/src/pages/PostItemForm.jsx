@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PageContainer from "../components/PageContainer";
 import api from "../api/axios";
 import {
   Calendar,
@@ -97,7 +98,7 @@ const PostItemForm = ({ type = "found" }) => {
   };
 
   return (
-    <div className="mx-10 my-4">
+    <PageContainer maxWidth="max-w-lg" className="my-4">
       <h1 className="flex justify-center text-4xl font-medium font-heading mb-3 text-text">
         {isFound ? "Report Something Found" : "Report Something Lost"}
       </h1>
@@ -261,7 +262,7 @@ const PostItemForm = ({ type = "found" }) => {
               : "Post Lost Item"}
         </button>
       </form>
-    </div>
+    </PageContainer>
   );
 };
 

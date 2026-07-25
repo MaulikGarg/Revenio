@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import api from "../api/axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import PageContainer from "../components/PageContainer";
 
 export const ItemDetail = () => {
   const { id } = useParams();
@@ -63,7 +64,7 @@ export const ItemDetail = () => {
   const canClaim = item.status === "active" && isFound && !isPoster;
 
   return (
-    <div className="max-w-xl mx-auto mt-10">
+    <PageContainer maxWidth="max-w-xl" className="mt-10">
       <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm">
         <h1 className="text-3xl font-heading mb-2 text-text">{item.title}</h1>
         <p className="text-sm text-subtext mb-4">
@@ -163,7 +164,7 @@ export const ItemDetail = () => {
           </p>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 
