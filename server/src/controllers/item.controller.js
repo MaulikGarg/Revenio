@@ -48,7 +48,7 @@ const getItems = async (req, res, next) => {
 
     // populate the "postedBy" in item with poster name and mail
     // this is not async so it does not execute, returns query
-    let query = Item.find(filter).populate("postedBy", "name email");
+    let query = Item.find(filter).populate("postedBy", "name");
 
     // if search query exists
     if (q) {
@@ -73,7 +73,7 @@ const getItemById = async (req, res, next) => {
   try {
     const item = await Item.findById(req.params.id).populate(
       "postedBy",
-      "name email",
+      "name",
     );
 
     if (!item) {
