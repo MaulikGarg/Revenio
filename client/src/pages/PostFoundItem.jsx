@@ -21,6 +21,7 @@ const PostFoundItem = () => {
   // flag to disable button when submitting
   const [submitting, setSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+  const [statusText, setStatusText] = useState("Post Found Item");
 
   const handleChange = (i) => {
     setFormData({ ...formData, [i.target.name]: i.target.value });
@@ -35,6 +36,7 @@ const PostFoundItem = () => {
     try {
       let photoUrl = "";
       if (imageFile) {
+        setStatusText("Uploading image...");
         // temporary form object to call upload middleware
         const imgForm = new FormData();
         imgForm.append("image", imageFile);
@@ -42,6 +44,7 @@ const PostFoundItem = () => {
         photoUrl = uploadRes.data.url;
       }
 
+      setStatusText("Posting item...");
       const payload = {
         ...formData,
         type: "found",
@@ -62,6 +65,7 @@ const PostFoundItem = () => {
       );
     } finally {
       setSubmitting(false);
+      setStatusText("Post Found Item");
     }
   };
 
@@ -162,7 +166,7 @@ const PostFoundItem = () => {
           disabled={submitting}
           className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50 self-center font-medium cursor-pointer transition"
         >
-          {submitting ? "Posting..." : "Post Found Item"}
+          {submitting ? statusText : "Post Found Item"}
         </button>
       </form>
     </div>

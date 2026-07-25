@@ -20,6 +20,7 @@ const PostLostItem = () => {
   // flag to disable button when submitting
   const [submitting, setSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+  const [statusText, setStatusText] = useState("Post Lost Item");
 
   const handleChange = (i) => {
     setFormData({ ...formData, [i.target.name]: i.target.value });
@@ -34,6 +35,7 @@ const PostLostItem = () => {
     try {
       let photoUrl = "";
       if (imageFile) {
+        setStatusText("Uploading image...");
         // temporary form object to call upload middleware
         const imgForm = new FormData();
         imgForm.append("image", imageFile);
@@ -41,6 +43,7 @@ const PostLostItem = () => {
         photoUrl = uploadRes.data.url;
       }
 
+      setStatusText("Posting item...");
       const payload = {
         ...formData,
         photoUrl,
@@ -61,6 +64,7 @@ const PostLostItem = () => {
       );
     } finally {
       setSubmitting(false);
+      setStatusText("Post Lost Item");
     }
   };
 
@@ -151,7 +155,7 @@ const PostLostItem = () => {
           disabled={submitting}
           className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50 self-center font-medium cursor-pointer transition"
         >
-          {submitting ? "Posting..." : "Post Lost Item"}
+          {submitting ? statusText : "Post Lost Item"}
         </button>
       </form>
     </div>
