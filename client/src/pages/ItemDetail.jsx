@@ -20,6 +20,17 @@ export const ItemDetail = () => {
   const [claimError, setClaimError] = useState("");
   const [claimSuccess, setClaimSuccess] = useState(false);
 
+  // handle claims
+  const [claims, setClaims] = useState([]);
+  const [claimsLoading, setClaimsLoading] = useState(false);
+  const [claimActionError, setClaimActionError] = useState("");
+
+  // can only claim found items
+  const isFound = item?.type === "found";
+  const isPoster = item?.postedBy._id === user.id;
+  const isAdmin = user.role === "admin";
+  const canClaim = item?.status === "active" && isFound && !isPoster;
+
   useEffect(() => {
     const fetchItem = async () => {
       try {
@@ -33,6 +44,23 @@ export const ItemDetail = () => {
     };
     fetchItem();
   }, [id]);
+
+  useEffect(() => {
+    if (!item || item.type !== "found" || (!isPoster && !isAdmin)) return;
+
+    const fetchClaims = async () => {
+      setClaimsLoading(true);
+      try {
+        const { data } = await api.get(`/claims/item/${item._id}`);
+        setClaims(data.data);
+      } catch (error) {
+        console.error("Failed to load claims:", error);
+      } finally {
+        setClaimsLoading(false);
+      }
+    };
+    fetchClaims();
+  }, [item, isPoster, isAdmin]);
 
   if (loading) return <p className="m-8 flex justify-center ">Loading...</p>;
   if (error) return <p className="m-8 text-error">{error}</p>;
@@ -58,10 +86,23 @@ export const ItemDetail = () => {
     }
   };
 
-  // can only claim found items
-  const isFound = item.type === "found";
-  const isPoster = item.postedBy._id === user.id;
-  const canClaim = item.status === "active" && isFound && !isPoster;
+  const handleClaimAction = async (claimId, status) => {
+    setClaimActionError("");
+    try {
+      await api.patch(`/claims/${claimId}`, { status });
+      // refresh claims list and item (item status may have changed to "claimed")
+      const [claimsRes, itemRes] = await Promise.all([
+        api.get(`/claims/item/${item._id}`),
+        api.get(`/items/${item._id}`),
+      ]);
+      setClaims(claimsRes.data.data);
+      setItem(itemRes.data.data);
+    } catch (error) {
+      setClaimActionError(
+        error.response?.data?.message || "Failed to update claim.",
+      );
+    }
+  };
 
   return (
     <PageContainer maxWidth="max-w-xl" className="mt-10">
@@ -109,10 +150,87 @@ export const ItemDetail = () => {
         <p className="mb-4 text-sm text-subtext">
           Posted by {item.postedBy.name}
         </p>
+        {/* if user is poster/admin or if item claimed */}
+        {(isPoster || isAdmin) && isFound && (
+          <div className="mt-4 border-t border-overlay pt-4">
+            <h2 className="text-xl font-semibold text-text mb-3">
+              Claims on this item
+            </h2>
 
-        {/* if user is poster or if item claimed */}
-        {isPoster && <p className="text-accent-500">This is your own post.</p>}
-        {!isPoster && item.status !== "active" && (
+            {claimActionError && (
+              <p className="text-error mb-2">{claimActionError}</p>
+            )}
+
+            {claimsLoading && <p className="text-subtext">Loading claims...</p>}
+
+            {!claimsLoading && claims.length === 0 && (
+              <p className="text-subtext">No claims yet.</p>
+            )}
+
+            {!claimsLoading && claims.length > 0 && (
+              <div className="flex flex-col gap-3">
+                {claims.map((claim) => (
+                  <div
+                    key={claim._id}
+                    className="border border-overlay rounded-lg p-3"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium text-text">
+                        {claim.claimantId.name}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full ${
+                          claim.status === "approved"
+                            ? "bg-success/20 text-success"
+                            : claim.status === "rejected"
+                              ? "bg-error/20 text-error"
+                              : "bg-overlay text-subtext"
+                        }`}
+                      >
+                        {claim.status}
+                      </span>
+                    </div>
+
+                    {claim.answer && (
+                      <p className="text-sm text-text mb-1">
+                        <strong>Answer:</strong> {claim.answer}
+                      </p>
+                    )}
+                    {claim.message && (
+                      <p className="text-sm text-subtext mb-2">
+                        "{claim.message}"
+                      </p>
+                    )}
+
+                    {claim.status === "pending" && (
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          onClick={() =>
+                            handleClaimAction(claim._id, "approved")
+                          }
+                          className="text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleClaimAction(claim._id, "rejected")
+                          }
+                          className="text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 transition-colors"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* if item is already claimed */}
+        {!isPoster && !isAdmin && item.status !== "active" && (
           <p className="text-subtext">This item is already {item.status}.</p>
         )}
 
@@ -157,7 +275,6 @@ export const ItemDetail = () => {
             </button>
           </form>
         )}
-
         {claimSuccess && (
           <p className="text-success mt-4">
             Claim submitted! The poster will review it.

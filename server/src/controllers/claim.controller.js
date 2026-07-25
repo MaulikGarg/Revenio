@@ -129,6 +129,16 @@ const updateClaimStatus = async (req, res, next) => {
     if (status === "approved") {
       item.status = "claimed";
       await item.save();
+
+      // auto reject all other claims
+      await Claim.updateMany(
+        {
+          itemId: item._id,
+          _id: { $ne: claim._id }, // exclude the one we just approved
+          status: "pending",
+        },
+        { status: "rejected" },
+      );
     }
 
     res.status(200).json({ success: true, data: claim });

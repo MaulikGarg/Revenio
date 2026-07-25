@@ -15,68 +15,72 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <Routes>
-        {/*If user exists then lost page otherwise login page*/}
-        <Route
-          path="/login"
-          element={user ? <Navigate to="/dashboard/lost" replace /> : <Login />}
-        />
+      <main className="flex-1 pb-8">
+        <Routes>
+          {/*If user exists then lost page otherwise login page*/}
+          <Route
+            path="/login"
+            element={
+              user ? <Navigate to="/dashboard/lost" replace /> : <Login />
+            }
+          />
 
-        {/* The item page */}
-        <Route
-          path="/item/:id"
-          element={
-            <ProtectedRoute>
-              <ItemDetail />
-            </ProtectedRoute>
-          }
-        />
+          {/* The item page */}
+          <Route
+            path="/item/:id"
+            element={
+              <ProtectedRoute>
+                <ItemDetail />
+              </ProtectedRoute>
+            }
+          />
 
-        {/*The lost item page*/}
-        <Route
-          path="/dashboard/lost"
-          element={
-            <ProtectedRoute>{<ItemsDashboard type="lost" />}</ProtectedRoute>
-          }
-        />
+          {/*The lost item page*/}
+          <Route
+            path="/dashboard/lost"
+            element={
+              <ProtectedRoute>{<ItemsDashboard type="lost" />}</ProtectedRoute>
+            }
+          />
 
-        {/* Post lost items */}
-        <Route
-          path="/post-lost"
-          element={
-            <ProtectedRoute>{<PostItemForm type="lost" />}</ProtectedRoute>
-          }
-        />
+          {/* Post lost items */}
+          <Route
+            path="/post-lost"
+            element={
+              <ProtectedRoute>{<PostItemForm type="lost" />}</ProtectedRoute>
+            }
+          />
 
-        {/*The found item page */}
-        <Route
-          path="/dashboard/found"
-          element={
-            <ProtectedRoute>{<ItemsDashboard type="found" />}</ProtectedRoute>
-          }
-        />
+          {/*The found item page */}
+          <Route
+            path="/dashboard/found"
+            element={
+              <ProtectedRoute>{<ItemsDashboard type="found" />}</ProtectedRoute>
+            }
+          />
 
-        {/* Post found items */}
-        <Route
-          path="/post-found"
-          element={
-            <ProtectedRoute>{<PostItemForm type="found" />}</ProtectedRoute>
-          }
-        />
+          {/* Post found items */}
+          <Route
+            path="/post-found"
+            element={
+              <ProtectedRoute>{<PostItemForm type="found" />}</ProtectedRoute>
+            }
+          />
 
-        {/*The admin panel*/}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute adminOnly>
-              <p className="text-text m-8">Placeholder lost page</p>
-            </ProtectedRoute>
-          }
-        />
+          {/*The admin panel*/}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute adminOnly>
+                <p className="text-text m-8">Placeholder Admin page</p>
+              </ProtectedRoute>
+            }
+          />
 
-        {/*All other non existent routes go to /lost*/}
-        <Route path="*" element={<Navigate to="/dashboard/lost" replace />} />
-      </Routes>
+          {/*All other non existent routes go to /lost*/}
+          <Route path="*" element={<Navigate to="/dashboard/lost" replace />} />
+        </Routes>
+      </main>
       <Footer />
     </div>
   );
