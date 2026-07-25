@@ -12,7 +12,6 @@ const PostFoundItem = () => {
     category: "Other",
     location: "",
     date: "",
-    photoUrl: "",
     claimQuestion: "",
     tags: "",
   });
@@ -21,6 +20,7 @@ const PostFoundItem = () => {
   const [error, setError] = useState("");
   // flag to disable button when submitting
   const [submitting, setSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
 
   const handleChange = (i) => {
     setFormData({ ...formData, [i.target.name]: i.target.value });
@@ -33,9 +33,19 @@ const PostFoundItem = () => {
     setSubmitting(true);
 
     try {
+      let photoUrl = "";
+      if (imageFile) {
+        // temporary form object to call upload middleware
+        const imgForm = new FormData();
+        imgForm.append("image", imageFile);
+        const uploadRes = await api.post("/upload", imgForm);
+        photoUrl = uploadRes.data.url;
+      }
+
       const payload = {
         ...formData,
         type: "found",
+        photoUrl,
         tags: formData.tags
           .split(",")
           .map((t) => t.trim()) // remove whitespaces
@@ -71,7 +81,7 @@ const PostFoundItem = () => {
           value={formData.title}
           onChange={handleChange}
           required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         />
 
         <textarea
@@ -80,7 +90,8 @@ const PostFoundItem = () => {
           value={formData.description}
           onChange={handleChange}
           required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+          rows={3}
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         />
 
         <select
@@ -88,7 +99,7 @@ const PostFoundItem = () => {
           value={formData.category}
           onChange={handleChange}
           required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         >
           <option value="" disabled>
             Select category
@@ -108,7 +119,7 @@ const PostFoundItem = () => {
           value={formData.location}
           onChange={handleChange}
           required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         />
 
         <input
@@ -117,7 +128,7 @@ const PostFoundItem = () => {
           value={formData.date}
           onChange={handleChange}
           required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         />
 
         <input
@@ -127,16 +138,14 @@ const PostFoundItem = () => {
           value={formData.claimQuestion}
           onChange={handleChange}
           required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         />
 
         <input
-          type="text"
-          name="photoUrl"
-          placeholder="Photo URL (optional)"
-          value={formData.photoUrl}
-          onChange={handleChange}
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageFile(e.target.files[0])}
+          className="block w-full text-sm text-subtext cursor-pointer rounded-lg border border-overlay bg-surface shadow-xs transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-l-lg file:border-0 file:bg-overlay file:text-text file:font-medium file:hover:bg-accent-500 file:hover:text-white"
         />
 
         <input
@@ -145,13 +154,13 @@ const PostFoundItem = () => {
           placeholder="Tags, comma separated (e.g. blue, plastic)"
           value={formData.tags}
           onChange={handleChange}
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         />
 
         <button
           type="submit"
           disabled={submitting}
-          className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded disabled:opacity-50 self-center"
+          className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50 self-center font-medium cursor-pointer transition"
         >
           {submitting ? "Posting..." : "Post Found Item"}
         </button>

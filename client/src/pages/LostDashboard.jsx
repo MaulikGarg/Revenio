@@ -55,13 +55,13 @@ export const LostDashboard = () => {
           placeholder="Search lost items..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded flex-1"
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg flex-1"
         />
 
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="border border-overlay bg-surface text-text p-2 rounded sm:w-48"
+          className="border border-overlay bg-surface text-text p-2 rounded-lg sm:w-48"
         >
           <option value="">All categories</option>
           {CATEGORIES.map((c) => (
@@ -85,13 +85,13 @@ export const LostDashboard = () => {
             <Link
               key={item._id}
               to={`/item/${item._id}`}
-              className="bg-surface border border-overlay rounded-lg p-4 hover:border-accent-500 transition-colors"
+              className="bg-surface border border-overlay rounded-lg-lg p-4 hover:border-accent-500 transition-colors"
             >
               {item.photoUrl && (
                 <img
                   src={item.photoUrl}
                   alt={item.title}
-                  className="mb-3 rounded-md h-32 w-full object-cover border border-overlay"
+                  className="mb-3 rounded-lg-md h-32 w-full object-cover border border-overlay"
                 />
               )}
 
@@ -100,7 +100,7 @@ export const LostDashboard = () => {
               </h2>
 
               <div className="flex items-center gap-2 mb-2">
-                <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
+                <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-lg-full">
                   {item.category}
                 </span>
                 <span className="text-xs text-subtext">{item.status}</span>

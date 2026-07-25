@@ -64,12 +64,12 @@ export const ItemDetail = () => {
 
   return (
     <div className="max-w-xl mx-auto mt-10">
-      <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm">
+      <div className="bg-surface border border-overlay rounded-lg-lg p-6 shadow-sm">
         <h1 className="text-3xl font-bold font-heading mb-2 text-text">
           {item.title}
         </h1>
         <p className="text-sm text-subtext mb-4">
-          <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
+          <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-lg-full">
             {item.type === "lost" ? "Lost" : "Found"} · {item.status}
           </span>
         </p>
@@ -77,7 +77,7 @@ export const ItemDetail = () => {
           <img
             src={item.photoUrl}
             alt={item.title}
-            className="mb-4 rounded-md max-h-64 w-full object-cover border border-overlay"
+            className="mb-4 rounded-lg-md max-h-64 w-full object-cover border border-overlay"
           />
         )}
         <p
@@ -137,7 +137,7 @@ export const ItemDetail = () => {
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                   required
-                  className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded w-full"
+                  className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full"
                 />
               </div>
             )}
@@ -146,13 +146,13 @@ export const ItemDetail = () => {
               placeholder="Optional message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded w-full"
+              className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full"
             />
 
             <button
               type="submit"
               disabled={claimSubmitting}
-              className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded disabled:opacity-50"
+              className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50"
             >
               {claimSubmitting ? "Submitting..." : "Submit Claim"}
             </button>
