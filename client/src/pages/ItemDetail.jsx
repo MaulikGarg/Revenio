@@ -4,6 +4,7 @@ import api from "../api/axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import PageContainer from "../components/PageContainer";
+import ReportButton from "../components/ReportButton";
 
 export const ItemDetail = () => {
   const { id } = useParams();
@@ -150,6 +151,14 @@ export const ItemDetail = () => {
         <p className="mb-4 text-sm text-subtext">
           Posted by {item.postedBy.name}
         </p>
+
+        {!isPoster && (
+          <div className="flex gap-4 mb-4">
+            <ReportButton targetItem={item._id} label="Report Item" />
+            <ReportButton targetUser={item.postedBy._id} label="Report User" />
+          </div>
+        )}
+
         {/* if user is poster/admin or if item claimed */}
         {(isPoster || isAdmin) && isFound && (
           <div className="mt-4 border-t border-overlay pt-4">
@@ -174,54 +183,67 @@ export const ItemDetail = () => {
                     key={claim._id}
                     className="border border-overlay rounded-lg p-3"
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-text">
-                        {claim.claimantId.name}
-                      </span>
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded-full ${
-                          claim.status === "approved"
-                            ? "bg-success/20 text-success"
-                            : claim.status === "rejected"
-                              ? "bg-error/20 text-error"
-                              : "bg-overlay text-subtext"
-                        }`}
-                      >
-                        {claim.status}
-                      </span>
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-medium text-text">
+                          {claim.claimantId.name}
+                        </span>
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full ${
+                            claim.status === "approved"
+                              ? "bg-success/20 text-success"
+                              : claim.status === "rejected"
+                                ? "bg-error/20 text-error"
+                                : "bg-overlay text-subtext"
+                          }`}
+                        >
+                          {claim.status}
+                        </span>
+                      </div>
+
+                      {claim.answer && (
+                        <p className="text-sm text-text mb-1">
+                          <strong>Answer:</strong> {claim.answer}
+                        </p>
+                      )}
+                      {claim.message && (
+                        <p className="text-sm text-subtext mb-2">
+                          "{claim.message}"
+                        </p>
+                      )}
                     </div>
 
-                    {claim.answer && (
-                      <p className="text-sm text-text mb-1">
-                        <strong>Answer:</strong> {claim.answer}
-                      </p>
-                    )}
-                    {claim.message && (
-                      <p className="text-sm text-subtext mb-2">
-                        "{claim.message}"
-                      </p>
-                    )}
-
-                    {claim.status === "pending" && (
-                      <div className="flex gap-2 mt-2">
-                        <button
-                          onClick={() =>
-                            handleClaimAction(claim._id, "approved")
-                          }
-                          className="text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleClaimAction(claim._id, "rejected")
-                          }
-                          className="text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 transition-colors"
-                        >
-                          Reject
-                        </button>
+                    <div className="flex items-center justify-between gap-2 mt-3 pt-2 border-t border-overlay/40">
+                      {/* Buttons for actions */}
+                      <div>
+                        {claim.status === "pending" && (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() =>
+                                handleClaimAction(claim._id, "approved")
+                              }
+                              className="text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors font-medium"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleClaimAction(claim._id, "rejected")
+                              }
+                              className="text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 transition-colors font-medium"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
+                      {user.id !== claim.claimantId._id && (
+                        <ReportButton
+                          targetUser={claim.claimantId._id}
+                          label="Report Claimant"
+                        />
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

@@ -31,8 +31,6 @@
     --color-error: #f38ba8;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 body {
     @apply bg-canvas text-text transition-colors;
 }

@@ -120,6 +120,7 @@ const PostItemForm = ({ type = "found" }) => {
             value={formData.title}
             onChange={handleChange}
             required
+            autocomplete="off"
             className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
           />
         </div>
@@ -135,6 +136,7 @@ const PostItemForm = ({ type = "found" }) => {
             value={formData.description}
             onChange={handleChange}
             required
+            autocomplete="off"
             rows={3}
             className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
           />
@@ -178,6 +180,7 @@ const PostItemForm = ({ type = "found" }) => {
             value={formData.location}
             onChange={handleChange}
             required
+            autocomplete="off"
             className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
           />
         </div>
@@ -217,6 +220,7 @@ const PostItemForm = ({ type = "found" }) => {
               value={formData.claimQuestion}
               onChange={handleChange}
               required
+              autocomplete="off"
               className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
             />
           </div>
@@ -246,6 +250,7 @@ const PostItemForm = ({ type = "found" }) => {
             placeholder="comma separated, e.g. blue, plastic"
             value={formData.tags}
             onChange={handleChange}
+            autocomplete="off"
             className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
           />
         </div>

@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p className="m-8 flex justify-center">Loading...</p>;
   }
 
   if (!user) {
