@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import PostLostItem from "./pages/PostLostItem";
 import ItemDetail from "./pages/ItemDetail";
 import Navbar from "./components/Navbar";
+import LostDashboard from "./pages/LostDashboard";
 
 function App() {
   const { user, loading } = useAuth();
@@ -35,7 +36,7 @@ function App() {
           path="/dashboard/lost"
           element={
             <ProtectedRoute>
-              <p className="text-text m-8">Placeholder lost page</p>
+              <LostDashboard />
             </ProtectedRoute>
           }
         />
