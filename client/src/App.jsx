@@ -7,6 +7,7 @@ import ItemDetail from "./pages/ItemDetail";
 import Navbar from "./components/Navbar";
 import ItemsDashboard from "./pages/ItemsDashboard";
 import Footer from "./components/Footer";
+import AdminPanel from "./pages/AdminPanel";
 
 function App() {
   const { user, loading } = useAuth();
@@ -72,7 +73,7 @@ function App() {
             path="/admin"
             element={
               <ProtectedRoute adminOnly>
-                <p className="text-text m-8">Placeholder Admin page</p>
+                <AdminPanel />
               </ProtectedRoute>
             }
           />
