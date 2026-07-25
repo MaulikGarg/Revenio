@@ -1,168 +1,182 @@
-## 💡 Project: **CampusCrate – Lost & Found System for College**
+# Revenio
 
----
+A campus lost & found platform built to replace chaotic WhatsApp/Telegram threads with a searchable, moderated, and secure system for students to report and recover lost items.
 
-### 🧩 **Problem It Solves:**
+## Features
 
-Students frequently lose or find items (ID cards, notebooks, water bottles, power banks, etc.) with **no reliable platform** to report or retrieve them. Relying on WhatsApp/Telegram threads leads to **lost messages, no searchability, and chaos**.
+- **Google OAuth login** — restricted to college email accounts via Google Identity Services
+- **Post lost/found items** — with category, location, date, tags, and optional photo upload
+- **Search & filter** — full-text search across title/description/tags, plus category filtering
+- **Claim flow** — claimants answer a verification question set by the finder; posters review, approve, or reject claims
+- **Auto-resolution** — approving one claim automatically rejects other pending claims on the same item, and marks the item as claimed
+- **Image uploads** — via Cloudinary, with client-side size/type validation before upload
+- **Admin panel** — view and block/unblock users, review and resolve abuse reports
+- **Dark/light theme** — Catppuccin Latte (light) and Mocha (dark) palettes, toggleable and persisted
+- **Responsive design** — usable across mobile, tablet, and desktop breakpoints
 
----
+## Tech Stack
 
-## 🧑‍🤝‍🧑 Key Users:
+**Frontend:** React (Vite), React Router, Tailwind CSS v4, Axios, lucide-react
 
-- **Student (Finder)** – Posts item they found
-- **Student (Loser)** – Searches for their lost item
-- **Admin** – Moderates abuse, verifies item matches, manages reports
+**Backend:** Node.js, Express, MongoDB (Mongoose)
 
----
+**Auth:** Google Identity Services + JWT
 
-## 🌐 System Features:
+**Image hosting:** Cloudinary (via Multer)
 
-### 🧭 Core Features:
+## Project Structure
 
-1. **Post Lost Item**
-2. **Post Found Item**
-3. **Search Lost/Found Listings**
-4. **Claim an Item** (with match questions)
-5. **Messaging system for clarification**
-6. **QR Code / Tag-based return (for ID cards, etc.)**
-7. **Report Abuse**
-8. **Admin approval for spam prevention**
-9. **Mark Item as Returned**
-
----
-
-## 🔁 User Flow
-
-### 🧍‍♂️ 1. **Lost Item Flow (Loser):**
-
-1. Student logs in via college email (Google Auth)
-2. Clicks on “I Lost Something”
-3. Fills form:
-   - Title: “Lost Blue Bottle”
-   - Category: Bottle, ID card, Electronic, Book, etc.
-   - Description, color, tags
-   - Date lost, location
-   - Upload photo (optional)
-
-4. Searches existing “Found” posts before submitting
-5. If not found, submits the Lost Post
-6. Receives notification if someone claims a match
-
----
-
-### 🧍‍♀️ 2. **Found Item Flow (Finder):**
-
-1. Logs in
-2. Clicks “I Found Something”
-3. Fills similar form:
-   - Description + image
-   - Date & location found
-
-4. System auto-checks against recent "Lost" items
-5. Can message person who reported lost
-6. Once returned:
-   - Clicks "Mark as Returned"
-
----
-
-### 🔐 3. **Claim Flow (For Lost or Found):**
-
-1. Click “Claim this item”
-2. System asks matching question (set by poster):
-   - e.g., “What’s the sticker on the back of your laptop?”
-
-3. Optional: Chat to verify
-4. Once both agree:
-   - Poster marks item as **Returned**
-   - System records exchange
-
----
-
-### 🔧 4. **Admin Flow:**
-
-1. Admin dashboard shows:
-   - Pending claims
-   - Reported abuse
-   - Suspicious posts (spam detection)
-
-2. Can approve/reject posts
-3. Can **block users** who misuse the platform
-
----
-
-## 🧱 Tech Stack (MERN):
-
-### 🔹 MongoDB Collections:
-
-#### 1. `users`
-
-```js
-{
-  _id,
-  name,
-  email,
-  role: "student" | "admin",
-  blocked: Boolean,
-  createdAt
-}
+```
+Revenio/
+├── client/
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── axios.js
+│   │   ├── components/
+│   │   │   ├── Footer.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── PageContainer.jsx
+│   │   │   └── ProtectedRoute.jsx
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── ThemeContext.jsx
+│   │   ├── pages/
+│   │   │   ├── AdminPanel.jsx
+│   │   │   ├── ItemDetail.jsx
+│   │   │   ├── ItemsDashboard.jsx
+│   │   │   ├── Login.jsx
+│   │   │   └── PostItemForm.jsx
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── .env
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.js
+│
+└── server/
+    ├── src/
+    │   ├── config/
+    │   │   ├── cloudinary.js
+    │   │   └── db.js
+    │   ├── controllers/
+    │   │   ├── admin.controller.js
+    │   │   ├── auth.controller.js
+    │   │   ├── claim.controller.js
+    │   │   ├── item.controller.js
+    │   │   ├── report.controller.js
+    │   │   └── upload.controller.js
+    │   ├── middleware/
+    │   │   ├── auth.middleware.js
+    │   │   ├── error.middleware.js
+    │   │   └── upload.middleware.js
+    │   ├── models/
+    │   │   ├── claim.model.js
+    │   │   ├── item.model.js
+    │   │   ├── report.model.js
+    │   │   └── user.model.js
+    │   ├── routes/
+    │   │   ├── admin.routes.js
+    │   │   ├── auth.routes.js
+    │   │   ├── claim.routes.js
+    │   │   ├── item.routes.js
+    │   │   ├── report.routes.js
+    │   │   └── upload.routes.js
+    │   └── utils/
+    │       └── app.js
+    ├── .env
+    ├── .gitignore
+    ├── package.json
+    ├── package-lock.json
+    └── server.js
 ```
 
-#### 2. `items`
+## Data Models
 
-```js
-{
-  _id,
-  type: "lost" | "found",
-  title,
-  description,
-  category,
-  location,
-  date,
-  photoUrl,
-  status: "active" | "claimed" | "returned",
-  postedBy, // ref to users
-  claimQuestion,
-  tags: [String],
-  createdAt
-}
+**User** — name, email, googleId, role (student/admin), blocked status
+
+**Item** — type (lost/found), title, description, category, location, date, photoUrl, status (active/claimed/returned), postedBy, claimQuestion, tags, matchedWith
+
+**Claim** — itemId, claimantId, answer, message, status (pending/approved/rejected)
+
+**Report** — reportedBy, targetItem, targetUser, reason, status (pending/reviewed/dismissed)
+
+## Setup
+
+### Backend
+
+```bash
+cd server
+npm install
 ```
 
-#### 3. `claims`
+Create a `.env` file in `/server`:
 
-```js
-{
-  itemId,
-  claimantId,
-  message,
-  status: "pending" | "approved" | "rejected",
-  createdAt
-}
+```
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRY=7d
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+PORT=3000
+CLIENT_URL=http://localhost:5173
 ```
 
----
+```bash
+node server.js
+```
 
-## 🧑‍💻 React Pages:
+### Frontend
 
-- `/login`
-- `/dashboard/lost`
-- `/dashboard/found`
-- `/post-lost`
-- `/post-found`
-- `/item/:id`
-- `/admin`
+```bash
+cd client
+npm install
+```
 
----
+Create a `.env` file in `/client`:
 
-## 🔐 Backend (Express/Node):
+```
+VITE_API_URL=http://localhost:3000/api
+VITE_GOOGLE_CLIENT_ID=your_google_oauth_client_id
+```
 
-- JWT Auth + Google Auth
-- Image uploads (Cloudinary)
-- REST APIs:
-  - `GET /items`
-  - `POST /items`
-  - `POST /claim`
-  - `PATCH /items/:id/status`
-  - `POST /report`
+```bash
+npm run dev
+```
 
----
+### Google OAuth setup
+
+1. Create a project in [Google Cloud Console](https://console.cloud.google.com)
+2. Create an OAuth 2.0 Client ID (Web application)
+3. Add `http://localhost:5173` under **Authorized JavaScript origins**
+4. Use the resulting Client ID in both `.env` files above
+
+### Cloudinary setup
+
+1. Sign up at [cloudinary.com](https://cloudinary.com)
+2. Copy your Cloud Name, API Key, and API Secret from the dashboard into the backend `.env`
+
+## API Overview
+
+| Method | Route                        | Description                                             |
+| ------ | ---------------------------- | ------------------------------------------------------- |
+| POST   | `/api/auth/google`           | Verify Google token, issue JWT                          |
+| GET    | `/api/auth/me`               | Get current user                                        |
+| GET    | `/api/items`                 | List items (supports `type`, `category`, `status`, `q`) |
+| POST   | `/api/items`                 | Create a lost/found item                                |
+| GET    | `/api/items/:id`             | Get single item                                         |
+| PATCH  | `/api/items/:id/status`      | Update item status                                      |
+| POST   | `/api/claims`                | Submit a claim                                          |
+| GET    | `/api/claims/item/:itemId`   | Get claims for an item (poster/admin)                   |
+| PATCH  | `/api/claims/:id`            | Approve/reject a claim                                  |
+| POST   | `/api/reports`               | Submit a report                                         |
+| GET    | `/api/reports`               | List reports (admin)                                    |
+| PATCH  | `/api/reports/:id`           | Update report status (admin)                            |
+| GET    | `/api/admin/users`           | List all users (admin)                                  |
+| PATCH  | `/api/admin/users/:id/block` | Block/unblock a user (admin)                            |
+| POST   | `/api/upload`                | Upload an image to Cloudinary                           |
