@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-const PostLostItem = () => {
+const PostFoundItem = () => {
   // for redirection when submitted
   const navigate = useNavigate();
   // form data container
@@ -13,6 +13,7 @@ const PostLostItem = () => {
     location: "",
     date: "",
     photoUrl: "",
+    claimQuestion: "",
     tags: "",
   });
 
@@ -34,7 +35,7 @@ const PostLostItem = () => {
     try {
       const payload = {
         ...formData,
-        type: "lost",
+        type: "found",
         tags: formData.tags
           .split(",")
           .map((t) => t.trim()) // remove whitespaces
@@ -57,7 +58,7 @@ const PostLostItem = () => {
   return (
     <div className="mx-10 my-4">
       <h1 className="flex justify-center text-4xl font-medium font-heading mb-3 text-text">
-        Report Something Lost
+        Report Something Found
       </h1>
       {/* render error if present*/}
       {error ? <p className="text-error text-center">{error}</p> : null}
@@ -66,7 +67,7 @@ const PostLostItem = () => {
         <input
           type="text"
           name="title"
-          placeholder="Title (e.g. Lost Blue Bottle)"
+          placeholder="Title (e.g. Found Blue Bottle)"
           value={formData.title}
           onChange={handleChange}
           required
@@ -103,7 +104,7 @@ const PostLostItem = () => {
         <input
           type="text"
           name="location"
-          placeholder="Location lost"
+          placeholder="Location found"
           value={formData.location}
           onChange={handleChange}
           required
@@ -114,6 +115,16 @@ const PostLostItem = () => {
           type="date"
           name="date"
           value={formData.date}
+          onChange={handleChange}
+          required
+          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
+        />
+
+        <input
+          type="text"
+          name="claimQuestion"
+          placeholder="Ask something about the item"
+          value={formData.claimQuestion}
           onChange={handleChange}
           required
           className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded"
@@ -142,11 +153,11 @@ const PostLostItem = () => {
           disabled={submitting}
           className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded disabled:opacity-50 self-center"
         >
-          {submitting ? "Posting..." : "Post Lost Item"}
+          {submitting ? "Posting..." : "Post Found Item"}
         </button>
       </form>
     </div>
   );
 };
 
-export default PostLostItem;
+export default PostFoundItem;

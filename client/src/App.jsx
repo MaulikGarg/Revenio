@@ -3,6 +3,7 @@ import { useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Routes, Route, Navigate } from "react-router-dom";
 import PostLostItem from "./pages/PostLostItem";
+import PostFoundItem from "./pages/PostFoundItem";
 import ItemDetail from "./pages/ItemDetail";
 import Navbar from "./components/Navbar";
 import LostDashboard from "./pages/LostDashboard";
@@ -56,7 +57,17 @@ function App() {
           path="/dashboard/found"
           element={
             <ProtectedRoute>
-              <p className="text-text m-8">Placeholder lost page</p>
+              <p className="text-text m-8">Placeholder found page</p>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Post found items */}
+        <Route
+          path="/post-found"
+          element={
+            <ProtectedRoute>
+              <PostFoundItem />
             </ProtectedRoute>
           }
         />
