@@ -2,6 +2,25 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 
+import {
+  IdCard,
+  Droplet,
+  Laptop,
+  BookOpen,
+  Backpack,
+  Package,
+  Search,
+  Plus,
+} from "lucide-react";
+
+const CATEGORY_ICONS = {
+  "ID Card": IdCard,
+  Bottle: Droplet,
+  Electronics: Laptop,
+  Book: BookOpen,
+  Bag: Backpack,
+  Other: Package,
+};
 const CATEGORIES = ["ID Card", "Bottle", "Electronics", "Book", "Bag", "Other"];
 
 export const ItemsDashboard = ({ type = "lost" }) => {
@@ -46,29 +65,47 @@ export const ItemsDashboard = ({ type = "lost" }) => {
   }, [type, debouncedSearch, category]);
 
   const isLost = type === "lost";
+
   const title = isLost ? "Lost Items" : "Found Items";
   const placeholder = isLost ? "Search lost items..." : "Search found items...";
   const emptyMessage = isLost
     ? "No lost items found."
     : "No found items listed.";
+  const postLink = isLost ? "/post-lost" : "/post-found";
+  const postLabel = isLost ? "Post Lost Item" : "Post Found Item";
 
   return (
     <div className="max-w-5xl mx-auto p-4 sm:p-6">
-      <h1 className="text-4xl font-heading text-text mb-6">{title}</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-4xl font-heading text-text">{title}</h1>
+        <Link
+          to={postLink}
+          className="flex items-center gap-1 bg-accent-500 text-white hover:bg-accent-600 px-4 py-2 rounded-lg text-sm font-medium"
+        >
+          <Plus size={16} />
+          {postLabel}
+        </Link>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg flex-1"
-        />
+        <div className="relative flex-1">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder={placeholder}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border border-overlay bg-surface text-text placeholder-subtext p-2 pl-9 rounded-lg flex-1 transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+          />
+        </div>
 
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="border border-overlay bg-surface text-text p-2 rounded-lg sm:w-48"
+          className="border border-overlay bg-surface text-text p-2 rounded-lg sm:w-48 transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         >
           <option value="">All categories</option>
           {CATEGORIES.map((c) => (
@@ -92,7 +129,7 @@ export const ItemsDashboard = ({ type = "lost" }) => {
             <Link
               key={item._id}
               to={`/item/${item._id}`}
-              className="bg-surface border border-overlay rounded-lg p-4 hover:border-accent-500 transition-colors"
+              className="bg-surface border border-overlay rounded-lg p-4 transition hover:outline-none hover:border-accent-600 hover:ring-1 hover:ring-accent-500"
             >
               {item.photoUrl && (
                 <img
@@ -108,7 +145,15 @@ export const ItemsDashboard = ({ type = "lost" }) => {
 
               <div className="flex items-center gap-2 mb-2">
                 <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
-                  {item.category}
+                  {(() => {
+                    const Icon = CATEGORY_ICONS[item.category] || Package;
+                    return (
+                      <span className="flex items-center gap-1 bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
+                        <Icon size={12} />
+                        {item.category}
+                      </span>
+                    );
+                  })()}
                 </span>
                 <span className="text-xs text-subtext">{item.status}</span>
               </div>

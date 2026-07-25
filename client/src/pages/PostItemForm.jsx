@@ -1,25 +1,31 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import {
+  Calendar,
+  Tag,
+  ImagePlus,
+  Type,
+  AlignLeft,
+  Shapes,
+  MapPin,
+  HelpCircle,
+} from "lucide-react";
 
 const PostItemForm = ({ type = "found" }) => {
   const isFound = type === "found";
-  // for redirection when submitted
   const navigate = useNavigate();
-  // form data container
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "Other",
     location: "",
     date: "",
-    ...(isFound && { claimQuestion: "" }), // Only include for found items
+    ...(isFound && { claimQuestion: "" }),
     tags: "",
   });
 
-  // error container
   const [error, setError] = useState("");
-  // flag to disable button when submitting
   const [submitting, setSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [statusText, setStatusText] = useState("Post Found Item");
@@ -28,9 +34,32 @@ const PostItemForm = ({ type = "found" }) => {
     setFormData({ ...formData, [i.target.name]: i.target.value });
   };
 
+  const validate = () => {
+    if (formData.title.trim().length < 3) {
+      return "Title must be at least 3 characters.";
+    }
+    if (formData.description.trim().length < 10) {
+      return "Description must be at least 10 characters.";
+    }
+    const selectedDate = new Date(formData.date);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    if (selectedDate > today) {
+      return "Date cannot be in the future.";
+    }
+    if (imageFile && imageFile.size > 5 * 1024 * 1024) {
+      return "Image must be under 5MB.";
+    }
+    return null;
+  };
+
   const handleSubmit = async (i) => {
-    // prevents browser from reloading
     i.preventDefault();
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setError("");
     setSubmitting(true);
 
@@ -38,7 +67,6 @@ const PostItemForm = ({ type = "found" }) => {
       let photoUrl = "";
       if (imageFile) {
         setStatusText("Uploading image...");
-        // temporary form object to call upload middleware
         const imgForm = new FormData();
         imgForm.append("image", imageFile);
         const uploadRes = await api.post("/upload", imgForm);
@@ -52,15 +80,13 @@ const PostItemForm = ({ type = "found" }) => {
         type,
         tags: formData.tags
           .split(",")
-          .map((t) => t.trim()) // remove whitespaces
-          .filter(Boolean), // remove empty stuff
+          .map((t) => t.trim())
+          .filter(Boolean),
       };
 
       const { data } = await api.post("/items", payload);
-      // go to item after posting
       navigate(`/item/${data.data._id}`);
     } catch (error) {
-      // set error message
       setError(
         error.response?.data?.message || "Something went wrong. Try again.",
       );
@@ -75,94 +101,153 @@ const PostItemForm = ({ type = "found" }) => {
       <h1 className="flex justify-center text-4xl font-medium font-heading mb-3 text-text">
         {isFound ? "Report Something Found" : "Report Something Lost"}
       </h1>
-      {/* render error if present*/}
       {error ? <p className="text-error text-center">{error}</p> : null}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="text"
-          name="title"
-          placeholder="Title (e.g. Blue Bottle)"
-          value={formData.title}
-          onChange={handleChange}
-          required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
-        />
-
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-          rows={3}
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
-        />
-
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
-        >
-          <option value="" disabled>
-            Select category
-          </option>
-          <option value="ID Card">ID Card</option>
-          <option value="Bottle">Bottle</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Book">Book</option>
-          <option value="Bag">Bag</option>
-          <option value="Other">Other</option>
-        </select>
-
-        <input
-          type="text"
-          name="location"
-          placeholder={isFound ? "Location found" : "Location lost"}
-          value={formData.location}
-          onChange={handleChange}
-          required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
-        />
-
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
-        />
-
-        {isFound && (
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 max-w-lg mx-auto w-full"
+      >
+        <div>
+          <label className="flex items-center gap-2 text-sm text-subtext mb-1">
+            <Type size={16} />
+            Title
+          </label>
           <input
             type="text"
-            name="claimQuestion"
-            placeholder="Ask something about the item"
-            value={formData.claimQuestion}
+            name="title"
+            placeholder="e.g. Blue Bottle"
+            value={formData.title}
             onChange={handleChange}
             required
-            className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+            className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
           />
+        </div>
+
+        <div>
+          <label className="flex items-center gap-2 text-sm text-subtext mb-1">
+            <AlignLeft size={16} />
+            Description
+          </label>
+          <textarea
+            name="description"
+            placeholder="Describe the item..."
+            value={formData.description}
+            onChange={handleChange}
+            required
+            rows={3}
+            className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+          />
+        </div>
+
+        <div>
+          <label className="flex items-center gap-2 text-sm text-subtext mb-1">
+            <Shapes size={16} />
+            Category
+          </label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+            className="border border-overlay bg-surface text-text p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+          >
+            <option value="" disabled>
+              Select category
+            </option>
+            <option value="ID Card">ID Card</option>
+            <option value="Bottle">Bottle</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Book">Book</option>
+            <option value="Bag">Bag</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="flex items-center gap-2 text-sm text-subtext mb-1">
+            <MapPin size={16} />
+            Location
+          </label>
+          <input
+            type="text"
+            name="location"
+            placeholder={
+              isFound ? "Where did you find it?" : "Where did you lose it?"
+            }
+            value={formData.location}
+            onChange={handleChange}
+            required
+            className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+          />
+        </div>
+
+        <div>
+          <label className="flex items-center gap-2 text-sm text-subtext mb-1">
+            <Calendar size={16} />
+            Date
+          </label>
+          <div className="relative">
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              max={new Date().toISOString().split("T")[0]}
+              onChange={handleChange}
+              required
+              className="border border-overlay bg-surface text-text p-2 pr-10 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+            />
+            <Calendar
+              size={18}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"
+            />
+          </div>
+        </div>
+
+        {isFound && (
+          <div>
+            <label className="flex items-center gap-2 text-sm text-subtext mb-1">
+              <HelpCircle size={16} />
+              Claim Question
+            </label>
+            <input
+              type="text"
+              name="claimQuestion"
+              placeholder="Ask something only the owner would know"
+              value={formData.claimQuestion}
+              onChange={handleChange}
+              required
+              className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+            />
+          </div>
         )}
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImageFile(e.target.files[0])}
-          className="block w-full text-sm text-subtext cursor-pointer rounded-lg border border-overlay bg-surface shadow-xs transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-l-lg file:border-0 file:bg-overlay file:text-text file:font-medium file:hover:bg-accent-500 file:hover:text-white"
-        />
+        <div>
+          <label className="flex items-center gap-2 text-sm text-subtext mb-1">
+            <ImagePlus size={16} />
+            Photo (optional)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files[0])}
+            className="block w-full text-sm text-subtext cursor-pointer rounded-lg border border-overlay bg-surface shadow-xs transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-l-lg file:border-0 file:bg-overlay file:text-text file:font-medium file:hover:bg-accent-500 file:hover:text-white"
+          />
+        </div>
 
-        <input
-          type="text"
-          name="tags"
-          placeholder="Tags, comma separated (e.g. blue, plastic)"
-          value={formData.tags}
-          onChange={handleChange}
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
-        />
+        <div>
+          <label className="flex items-center gap-2 text-sm text-subtext mb-1">
+            <Tag size={16} />
+            Tags
+          </label>
+          <input
+            type="text"
+            name="tags"
+            placeholder="comma separated, e.g. blue, plastic"
+            value={formData.tags}
+            onChange={handleChange}
+            className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+          />
+        </div>
 
         <button
           type="submit"

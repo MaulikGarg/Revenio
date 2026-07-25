@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { Sun, Moon, LogOut } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -20,42 +21,31 @@ const Navbar = () => {
 
       {/* CENTER */}
       {/* CENTER */}
-      <div className="justify-self-center flex items-center gap-3 sm:gap-5 w-max">
+      <div className="justify-self-center flex items-center gap-2.5 sm:gap-4 w-max">
         {user && (
           <>
             <Link
               to="/dashboard/lost"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
+              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-xs sm:text-sm whitespace-nowrap"
             >
               Lost
             </Link>
+
             <span className="h-3.5 w-px bg-overlay/80" />
+
             <Link
               to="/dashboard/found"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
+              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-xs sm:text-sm whitespace-nowrap"
             >
               Found
             </Link>
-            <span className="h-3.5 w-px bg-overlay/80" />
-            <Link
-              to="/post-lost"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
-            >
-              Post Lost
-            </Link>
-            <span className="h-3.5 w-px bg-overlay/80" />
-            <Link
-              to="/post-found"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
-            >
-              Post Found
-            </Link>
+
             {user.role === "admin" && (
               <>
                 <span className="h-3.5 w-px bg-overlay/80" />
                 <Link
                   to="/admin"
-                  className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
+                  className="text-subtext hover:underline hover:text-accent-500 transition-colors text-xs sm:text-sm whitespace-nowrap"
                 >
                   Admin
                 </Link>
@@ -71,7 +61,7 @@ const Navbar = () => {
           onClick={toggleTheme}
           className="text-lg px-1.5 py-1 rounded-lg hover:bg-overlay transition-colors cursor-pointer"
         >
-          {theme === "dark" ? "☀️" : "🌙"}
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
         {user && (
@@ -82,9 +72,10 @@ const Navbar = () => {
               </span>
               <button
                 onClick={logout}
-                className="text-[10px] text-subtext hover:text-error hover:underline cursor-pointer transition-colors"
+                className="flex items-center gap-1 text-[11px] text-subtext hover:text-error transition-colors cursor-pointer"
               >
-                Logout
+                <LogOut size={11} />
+                <span className="hover:underline">Logout</span>
               </button>
             </div>
           </div>

@@ -65,9 +65,7 @@ export const ItemDetail = () => {
   return (
     <div className="max-w-xl mx-auto mt-10">
       <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm">
-        <h1 className="text-3xl font-bold font-heading mb-2 text-text">
-          {item.title}
-        </h1>
+        <h1 className="text-3xl font-heading mb-2 text-text">{item.title}</h1>
         <p className="text-sm text-subtext mb-4">
           <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
             {item.type === "lost" ? "Lost" : "Found"} · {item.status}
