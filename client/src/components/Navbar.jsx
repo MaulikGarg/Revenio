@@ -29,18 +29,21 @@ const Navbar = () => {
             >
               Lost
             </Link>
+            <span className="h-3.5 w-px bg-overlay/80" />
             <Link
               to="/dashboard/found"
               className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
             >
               Found
             </Link>
+            <span className="h-3.5 w-px bg-overlay/80" />
             <Link
               to="/post-lost"
               className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
             >
               Post Lost
             </Link>
+            <span className="h-3.5 w-px bg-overlay/80" />
             <Link
               to="/post-found"
               className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
@@ -48,12 +51,15 @@ const Navbar = () => {
               Post Found
             </Link>
             {user.role === "admin" && (
-              <Link
-                to="/admin"
-                className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
-              >
-                Admin
-              </Link>
+              <>
+                <span className="h-3.5 w-px bg-overlay/80" />
+                <Link
+                  to="/admin"
+                  className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
+                >
+                  Admin
+                </Link>
+              </>
             )}
           </>
         )}
