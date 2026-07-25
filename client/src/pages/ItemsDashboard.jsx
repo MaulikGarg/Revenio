@@ -4,7 +4,7 @@ import api from "../api/axios";
 
 const CATEGORIES = ["ID Card", "Bottle", "Electronics", "Book", "Bag", "Other"];
 
-export const LostDashboard = () => {
+export const ItemsDashboard = ({ type = "lost" }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,7 +29,7 @@ export const LostDashboard = () => {
       try {
         const { data } = await api.get("/items", {
           params: {
-            type: "lost",
+            type,
             q: debouncedSearch || undefined,
             category: category || undefined,
           },
@@ -43,16 +43,23 @@ export const LostDashboard = () => {
     };
 
     fetchItems();
-  }, [debouncedSearch, category]);
+  }, [type, debouncedSearch, category]);
+
+  const isLost = type === "lost";
+  const title = isLost ? "Lost Items" : "Found Items";
+  const placeholder = isLost ? "Search lost items..." : "Search found items...";
+  const emptyMessage = isLost
+    ? "No lost items found."
+    : "No found items listed.";
 
   return (
     <div className="max-w-5xl mx-auto p-4 sm:p-6">
-      <h1 className="text-4xl font-heading text-text mb-6">Lost Items</h1>
+      <h1 className="text-4xl font-heading text-text mb-6">{title}</h1>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <input
           type="text"
-          placeholder="Search lost items..."
+          placeholder={placeholder}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg flex-1"
@@ -76,7 +83,7 @@ export const LostDashboard = () => {
       {error && <p className="text-error text-center mt-10">{error}</p>}
 
       {!loading && !error && items.length === 0 && (
-        <p className="text-subtext text-center mt-10">No lost items found.</p>
+        <p className="text-subtext text-center mt-10">{emptyMessage}</p>
       )}
 
       {!loading && !error && items.length > 0 && (
@@ -85,13 +92,13 @@ export const LostDashboard = () => {
             <Link
               key={item._id}
               to={`/item/${item._id}`}
-              className="bg-surface border border-overlay rounded-lg-lg p-4 hover:border-accent-500 transition-colors"
+              className="bg-surface border border-overlay rounded-lg p-4 hover:border-accent-500 transition-colors"
             >
               {item.photoUrl && (
                 <img
                   src={item.photoUrl}
                   alt={item.title}
-                  className="mb-3 rounded-lg-md h-32 w-full object-cover border border-overlay"
+                  className="mb-3 rounded-md h-32 w-full object-cover border border-overlay"
                 />
               )}
 
@@ -100,7 +107,7 @@ export const LostDashboard = () => {
               </h2>
 
               <div className="flex items-center gap-2 mb-2">
-                <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-lg-full">
+                <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
                   {item.category}
                 </span>
                 <span className="text-xs text-subtext">{item.status}</span>
@@ -121,4 +128,4 @@ export const LostDashboard = () => {
   );
 };
 
-export default LostDashboard;
+export default ItemsDashboard;

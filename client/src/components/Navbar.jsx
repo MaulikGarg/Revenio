@@ -19,37 +19,38 @@ const Navbar = () => {
       </div>
 
       {/* CENTER */}
-      <div className="justify-self-center flex gap-2 sm:gap-6">
+      {/* CENTER */}
+      <div className="justify-self-center flex items-center gap-3 sm:gap-5 w-max">
         {user && (
           <>
             <Link
               to="/dashboard/lost"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base"
+              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
             >
               Lost
             </Link>
             <Link
               to="/dashboard/found"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base"
+              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
             >
               Found
             </Link>
             <Link
               to="/post-lost"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base"
+              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
             >
               Post Lost
             </Link>
             <Link
               to="/post-found"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base"
+              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
             >
               Post Found
             </Link>
             {user.role === "admin" && (
               <Link
                 to="/admin"
-                className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base"
+                className="text-subtext hover:underline hover:text-accent-500 transition-colors text-sm sm:text-base whitespace-nowrap"
               >
                 Admin
               </Link>
@@ -62,23 +63,24 @@ const Navbar = () => {
       <div className="justify-self-end flex items-center gap-3">
         <button
           onClick={toggleTheme}
-          className="text-lg px-1.5 py-1 rounded-lg hover:bg-overlay transition-colors"
+          className="text-lg px-1.5 py-1 rounded-lg hover:bg-overlay transition-colors cursor-pointer"
         >
           {theme === "dark" ? "☀️" : "🌙"}
         </button>
 
         {user && (
-          <div className="flex items-center gap-2 border-l border-overlay pl-2 sm:pl-3">
-            {/* Inline layout instead of double-stacked flex-col */}
-            <span className="text-sm text-subtext font-medium hidden sm:inline">
-              {user.name}
-            </span>
-            <button
-              onClick={logout}
-              className="text-xs sm:text-sm text-subtext hover:text-accent-500 hover:underline transition-colors cursor-pointer"
-            >
-              Logout
-            </button>
+          <div className="border-l border-overlay pl-2 sm:pl-3">
+            <div className="flex flex-col items-end leading-tight">
+              <span className="text-xs sm:text-sm text-subtext font-medium truncate max-w-xl">
+                {user.name}
+              </span>
+              <button
+                onClick={logout}
+                className="text-[10px] text-subtext hover:text-error hover:underline cursor-pointer transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         )}
       </div>

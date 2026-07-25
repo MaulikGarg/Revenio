@@ -2,11 +2,10 @@ import Login from "./pages/Login";
 import { useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Routes, Route, Navigate } from "react-router-dom";
-import PostLostItem from "./pages/PostLostItem";
-import PostFoundItem from "./pages/PostFoundItem";
+import PostItemForm from "./pages/PostItemForm";
 import ItemDetail from "./pages/ItemDetail";
 import Navbar from "./components/Navbar";
-import LostDashboard from "./pages/LostDashboard";
+import ItemsDashboard from "./pages/ItemsDashboard";
 
 function App() {
   const { user, loading } = useAuth();
@@ -36,9 +35,7 @@ function App() {
         <Route
           path="/dashboard/lost"
           element={
-            <ProtectedRoute>
-              <LostDashboard />
-            </ProtectedRoute>
+            <ProtectedRoute>{<ItemsDashboard type="lost" />}</ProtectedRoute>
           }
         />
 
@@ -46,9 +43,7 @@ function App() {
         <Route
           path="/post-lost"
           element={
-            <ProtectedRoute>
-              <PostLostItem />
-            </ProtectedRoute>
+            <ProtectedRoute>{<PostItemForm type="lost" />}</ProtectedRoute>
           }
         />
 
@@ -56,9 +51,7 @@ function App() {
         <Route
           path="/dashboard/found"
           element={
-            <ProtectedRoute>
-              <p className="text-text m-8">Placeholder found page</p>
-            </ProtectedRoute>
+            <ProtectedRoute>{<ItemsDashboard type="found" />}</ProtectedRoute>
           }
         />
 
@@ -66,9 +59,7 @@ function App() {
         <Route
           path="/post-found"
           element={
-            <ProtectedRoute>
-              <PostFoundItem />
-            </ProtectedRoute>
+            <ProtectedRoute>{<PostItemForm type="found" />}</ProtectedRoute>
           }
         />
 

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-const PostFoundItem = () => {
+const PostItemForm = ({ type = "found" }) => {
+  const isFound = type === "found";
   // for redirection when submitted
   const navigate = useNavigate();
   // form data container
@@ -12,7 +13,7 @@ const PostFoundItem = () => {
     category: "Other",
     location: "",
     date: "",
-    claimQuestion: "",
+    ...(isFound && { claimQuestion: "" }), // Only include for found items
     tags: "",
   });
 
@@ -47,8 +48,8 @@ const PostFoundItem = () => {
       setStatusText("Posting item...");
       const payload = {
         ...formData,
-        type: "found",
         photoUrl,
+        type,
         tags: formData.tags
           .split(",")
           .map((t) => t.trim()) // remove whitespaces
@@ -65,14 +66,14 @@ const PostFoundItem = () => {
       );
     } finally {
       setSubmitting(false);
-      setStatusText("Post Found Item");
+      setStatusText(isFound ? "Post Found Item" : "Post Lost Item");
     }
   };
 
   return (
     <div className="mx-10 my-4">
       <h1 className="flex justify-center text-4xl font-medium font-heading mb-3 text-text">
-        Report Something Found
+        {isFound ? "Report Something Found" : "Report Something Lost"}
       </h1>
       {/* render error if present*/}
       {error ? <p className="text-error text-center">{error}</p> : null}
@@ -81,7 +82,7 @@ const PostFoundItem = () => {
         <input
           type="text"
           name="title"
-          placeholder="Title (e.g. Found Blue Bottle)"
+          placeholder="Title (e.g. Blue Bottle)"
           value={formData.title}
           onChange={handleChange}
           required
@@ -119,7 +120,7 @@ const PostFoundItem = () => {
         <input
           type="text"
           name="location"
-          placeholder="Location found"
+          placeholder={isFound ? "Location found" : "Location lost"}
           value={formData.location}
           onChange={handleChange}
           required
@@ -135,15 +136,17 @@ const PostFoundItem = () => {
           className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
         />
 
-        <input
-          type="text"
-          name="claimQuestion"
-          placeholder="Ask something about the item"
-          value={formData.claimQuestion}
-          onChange={handleChange}
-          required
-          className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
-        />
+        {isFound && (
+          <input
+            type="text"
+            name="claimQuestion"
+            placeholder="Ask something about the item"
+            value={formData.claimQuestion}
+            onChange={handleChange}
+            required
+            className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
+          />
+        )}
 
         <input
           type="file"
@@ -166,11 +169,15 @@ const PostFoundItem = () => {
           disabled={submitting}
           className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50 self-center font-medium cursor-pointer transition"
         >
-          {submitting ? statusText : "Post Found Item"}
+          {submitting
+            ? statusText
+            : isFound
+              ? "Post Found Item"
+              : "Post Lost Item"}
         </button>
       </form>
     </div>
   );
 };
 
-export default PostFoundItem;
+export default PostItemForm;
