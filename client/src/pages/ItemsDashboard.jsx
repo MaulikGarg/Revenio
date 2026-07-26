@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 import PageContainer from "../components/PageContainer";
 
@@ -52,6 +52,14 @@ export const ItemsDashboard = ({ type, mine = false }) => {
   // actual search item used interanally for api call
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [category, setCategory] = useState("");
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const qParam = searchParams.get("q");
+    const categoryParam = searchParams.get("category");
+    if (qParam) setSearchQuery(qParam);
+    if (categoryParam) setCategory(categoryParam);
+  }, [searchParams]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

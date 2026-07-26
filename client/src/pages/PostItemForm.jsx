@@ -30,9 +30,20 @@ const PostItemForm = ({ type = "found" }) => {
   const [submitting, setSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [statusText, setStatusText] = useState("Post Found Item");
+  const [confirmedCheck, setConfirmedCheck] = useState(false);
 
   const handleChange = (i) => {
     setFormData({ ...formData, [i.target.name]: i.target.value });
+  };
+
+  const handleCheckExisting = () => {
+    const targetType = isFound ? "lost" : "found";
+    const params = new URLSearchParams();
+    if (formData.title) params.set("q", formData.title);
+    if (formData.category && formData.category !== "Other")
+      params.set("category", formData.category);
+
+    window.open(`/dashboard/${targetType}?${params.toString()}`, "_blank");
   };
 
   const validate = () => {
@@ -50,6 +61,9 @@ const PostItemForm = ({ type = "found" }) => {
     }
     if (imageFile && imageFile.size > 5 * 1024 * 1024) {
       return "Image must be under 5MB.";
+    }
+    if (!confirmedCheck) {
+      return "Please confirm you checked existing posts first.";
     }
     return null;
   };
@@ -254,11 +268,33 @@ const PostItemForm = ({ type = "found" }) => {
             className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full transition focus:outline-none focus:border-accent-600 focus:ring-1 focus:ring-accent-500"
           />
         </div>
-
+        <div className="flex items-center gap-2 border border-overlay rounded-lg p-3">
+          <input
+            type="checkbox"
+            id="confirmCheck"
+            checked={confirmedCheck}
+            onChange={(e) => setConfirmedCheck(e.target.checked)}
+            className="w-4 h-4 accent-accent-500 cursor-pointer"
+          />
+          <label
+            htmlFor="confirmCheck"
+            className="text-sm text-text flex-1 cursor-pointer"
+          >
+            I checked the {isFound ? "lost" : "found"} items page and didn't
+            find a matching post.
+          </label>
+          <button
+            type="button"
+            onClick={handleCheckExisting}
+            className="text-xs text-accent-500 hover:underline whitespace-nowrap cursor-pointer underline"
+          >
+            Check now
+          </button>
+        </div>
         <button
           type="submit"
-          disabled={submitting}
-          className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50 self-center font-medium cursor-pointer transition"
+          disabled={submitting || !confirmedCheck}
+          className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed self-center font-medium cursor-pointer transition"
         >
           {submitting
             ? statusText
