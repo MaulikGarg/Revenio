@@ -12,6 +12,8 @@ import {
   Package,
   Search,
   Plus,
+  PackageSearch,
+  PackageCheck,
 } from "lucide-react";
 
 const CATEGORY_ICONS = {
@@ -86,15 +88,20 @@ export const ItemsDashboard = ({ type = "lost" }) => {
   const title = isLost ? "Lost Items" : "Found Items";
   const placeholder = isLost ? "Search lost items..." : "Search found items...";
   const emptyMessage = isLost
-    ? "No lost items found."
+    ? "No lost items listed."
     : "No found items listed.";
   const postLink = isLost ? "/post-lost" : "/post-found";
   const postLabel = isLost ? "Post Lost Item" : "Post Found Item";
+  const headingColor = isLost ? "text-peach" : "text-blue";
+  const HeadingIcon = isLost ? PackageSearch : PackageCheck;
 
   return (
     <PageContainer maxWidth="max-w-6xl" className="py-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        <h1 className="text-4xl font-heading text-text">{title}</h1>
+        <div className="flex items-center gap-3">
+          <HeadingIcon size={32} className={headingColor} />
+          <h1 className={`text-4xl font-heading ${headingColor}`}>{title}</h1>
+        </div>
         <Link
           to={postLink}
           className="flex items-center justify-center gap-1 bg-accent-500 text-white hover:bg-accent-600 px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto"
@@ -137,7 +144,10 @@ export const ItemsDashboard = ({ type = "lost" }) => {
       {error && <p className="text-error text-center mt-10">{error}</p>}
 
       {!loading && !error && items.length === 0 && (
-        <p className="text-subtext text-center mt-10">{emptyMessage}</p>
+        <div className="flex flex-col items-center gap-3 mt-16">
+          <HeadingIcon size={48} className={`${headingColor} opacity-50`} />
+          <p className="text-subtext">{emptyMessage}</p>
+        </div>
       )}
 
       {!loading && !error && items.length > 0 && (
@@ -146,7 +156,7 @@ export const ItemsDashboard = ({ type = "lost" }) => {
             <Link
               key={item._id}
               to={`/item/${item._id}`}
-              className="bg-surface border border-overlay rounded-lg p-4 transition hover:outline-none hover:border-accent-600 hover:ring-1 hover:ring-accent-500"
+              className={`group bg-surface border border-overlay ${isLost ? "border-l-4 border-l-peach" : "border-l-4 border-l-blue"} rounded-lg p-4 transition hover:outline-none hover:border-accent-600 hover:ring-1 hover:ring-accent-500`}
             >
               {item.photoUrl && (
                 <img
@@ -156,7 +166,7 @@ export const ItemsDashboard = ({ type = "lost" }) => {
                 />
               )}
 
-              <h2 className="text-lg font-semibold text-text mb-1">
+              <h2 className="text-lg text-text mb-1 group-hover:text-accent-500 transition-colors">
                 {item.title}
               </h2>
 

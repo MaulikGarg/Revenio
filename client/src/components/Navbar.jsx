@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { Sun, Moon, LogOut } from "lucide-react";
+import { Sun, Moon, LogOut, PackageSearch, PackageCheck } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
+  const isLostActive = location.pathname.startsWith("/dashboard/lost");
+  const isFoundActive = location.pathname.startsWith("/dashboard/found");
 
   return (
     <nav className="grid grid-cols-3 items-center border-b border-overlay bg-surface px-4 py-2 sm:px-6 sm:py-2.5">
@@ -20,14 +23,18 @@ const Navbar = () => {
       </div>
 
       {/* CENTER */}
-      {/* CENTER */}
       <div className="justify-self-center flex items-center gap-2.5 sm:gap-4 w-max">
         {user && (
           <>
             <Link
               to="/dashboard/lost"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-xs sm:text-sm whitespace-nowrap"
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors text-xs sm:text-sm whitespace-nowrap ${
+                isLostActive
+                  ? "bg-peach/20 text-peach font-medium"
+                  : "text-subtext hover:text-peach"
+              }`}
             >
+              <PackageSearch size={14} />
               Lost
             </Link>
 
@@ -35,8 +42,13 @@ const Navbar = () => {
 
             <Link
               to="/dashboard/found"
-              className="text-subtext hover:underline hover:text-accent-500 transition-colors text-xs sm:text-sm whitespace-nowrap"
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors text-xs sm:text-sm whitespace-nowrap ${
+                isFoundActive
+                  ? "bg-blue/20 text-blue font-medium"
+                  : "text-subtext hover:text-blue"
+              }`}
             >
+              <PackageCheck size={14} />
               Found
             </Link>
 
