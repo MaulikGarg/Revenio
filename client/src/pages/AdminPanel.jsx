@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
 import PageContainer from "../components/PageContainer";
 import { Users, Flag } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const REPORT_STATUSES = ["pending", "reviewed", "dismissed"];
 
@@ -224,9 +225,13 @@ const AdminPanel = () => {
                   <p className="text-sm text-text mb-1">{r.reason}</p>
 
                   {r.targetItem && (
-                    <p className="text-xs text-subtext">
+                    <Link
+                      key={r.targetItem._id}
+                      to={`/item/${r.targetItem._id}`}
+                      className="text-xs text-blue underline"
+                    >
                       Item: {r.targetItem.title}
-                    </p>
+                    </Link>
                   )}
                   {r.targetUser && (
                     <p className="text-xs text-subtext">

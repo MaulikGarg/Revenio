@@ -40,7 +40,11 @@ export const ItemDetail = () => {
   const isAdmin = user.role === "admin";
   const hasPendingClaim = myClaims.some((c) => c.status === "pending");
   const canClaim =
-    item?.status === "active" && isFound && !isPoster && !hasPendingClaim;
+    item?.status === "active" &&
+    isFound &&
+    !isPoster &&
+    !isAdmin &&
+    !hasPendingClaim;
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -341,7 +345,7 @@ export const ItemDetail = () => {
         {!isPoster && myClaims.length > 0 && (
           <div className="mt-4 border-t border-overlay pt-4">
             <h2 className="text-lg font-semibold text-text mb-2">
-              Your claim history
+              {isAdmin ? "Claim History" : "Your claim history"}
             </h2>
             <div className="flex flex-col gap-2">
               {myClaims.map((c) => (

@@ -1,7 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { Sun, Moon, LogOut, PackageSearch, PackageCheck } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  LogOut,
+  PackageSearch,
+  PackageCheck,
+  ShieldUser,
+} from "lucide-react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -9,6 +16,7 @@ const Navbar = () => {
   const location = useLocation();
   const isLostActive = location.pathname.startsWith("/dashboard/lost");
   const isFoundActive = location.pathname.startsWith("/dashboard/found");
+  const isAdminActive = location.pathname.startsWith("/admin");
 
   return (
     <nav className="grid grid-cols-3 items-center border-b border-overlay bg-surface px-4 py-2 sm:px-6 sm:py-2.5">
@@ -34,7 +42,7 @@ const Navbar = () => {
                   : "text-subtext hover:text-peach"
               }`}
             >
-              <PackageSearch size={14} />
+              <PackageSearch size={16} />
               Lost
             </Link>
 
@@ -48,7 +56,7 @@ const Navbar = () => {
                   : "text-subtext hover:text-blue"
               }`}
             >
-              <PackageCheck size={14} />
+              <PackageCheck size={16} />
               Found
             </Link>
 
@@ -57,8 +65,13 @@ const Navbar = () => {
                 <span className="h-3.5 w-px bg-overlay/80" />
                 <Link
                   to="/admin"
-                  className="text-subtext hover:underline hover:text-accent-500 transition-colors text-xs sm:text-sm whitespace-nowrap"
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-colors text-xs sm:text-sm whitespace-nowrap ${
+                    isAdminActive
+                      ? "bg-error/20 text-error font-medium"
+                      : "text-subtext hover:text-error"
+                  }`}
                 >
+                  <ShieldUser size={16} />
                   Admin
                 </Link>
               </>

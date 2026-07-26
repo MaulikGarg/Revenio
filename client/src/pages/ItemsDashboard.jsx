@@ -5,7 +5,7 @@ import PageContainer from "../components/PageContainer";
 
 import {
   IdCard,
-  Droplet,
+  Milk,
   Laptop,
   BookOpen,
   Backpack,
@@ -18,7 +18,7 @@ import {
 
 const CATEGORY_ICONS = {
   "ID Card": IdCard,
-  Bottle: Droplet,
+  Bottle: Milk,
   Electronics: Laptop,
   Book: BookOpen,
   Bag: Backpack,
