@@ -87,7 +87,7 @@ const Navbar = () => {
         {user && (
           <Link
             to="/my-items"
-            className="text-lg px-1.5 py-1 rounded-lg hover:bg-overlay transition-colors cursor-pointer"
+            className="text-lg px-1.5 py-1 rounded-lg hover:bg-overlay cursor-pointer"
           >
             <Package2 size={18} />
           </Link>
