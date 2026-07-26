@@ -20,6 +20,11 @@ const AdminPanel = () => {
 
   const [actionError, setActionError] = useState("");
 
+  const roleColors = {
+    admin: "text-error",
+    student: "text-success",
+  };
+
   // fetch users lazily, only once, when Users tab is first opened
   useEffect(() => {
     if (activeTab !== "users" || usersFetched) return;
@@ -142,9 +147,13 @@ const AdminPanel = () => {
                     <div>
                       <p className="text-text font-medium">{u.name}</p>
                       <p className="text-xs text-subtext">{u.email}</p>
-                      <p className="text-xs text-subtext capitalize">
-                        {u.role}
-                      </p>
+                      {roleColors[u.role] && (
+                        <p
+                          className={`text-xs capitalize ${roleColors[u.role]}`}
+                        >
+                          {u.role}
+                        </p>
+                      )}
                     </div>
 
                     {u._id !== currentUser.id && (

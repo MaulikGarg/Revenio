@@ -66,17 +66,18 @@ const getClaimsForItem = async (req, res, next) => {
         .json({ success: false, message: "Item not found" });
     }
 
+    // base filter: always scoped to this item
+    const filter = { itemId: req.params.itemId };
+
     // auth
     const isPoster = item.postedBy.toString() === req.user._id.toString();
     const isAdmin = req.user.role === "admin";
     if (!isPoster && !isAdmin) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Not authorized" });
+      filter.claimantId = req.user._id;
     }
 
     // get claims sorted by recent first
-    const claims = await Claim.find({ itemId: req.params.itemId })
+    const claims = await Claim.find(filter)
       .populate("claimantId", "name email")
       .sort({ createdAt: -1 });
 

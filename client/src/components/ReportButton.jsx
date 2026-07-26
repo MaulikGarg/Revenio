@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Flag } from "lucide-react";
 import api from "../api/axios";
 
@@ -8,6 +8,26 @@ const ReportButton = ({ targetItem, targetUser, label = "Report" }) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [existingStatus, setExistingStatus] = useState(null);
+  const [checking, setChecking] = useState(true);
+
+  // get existing reports
+  useEffect(() => {
+    const checkExisting = async () => {
+      try {
+        const { data } = await api.get("/reports/mine", {
+          params: { targetItem, targetUser },
+        });
+        const pending = data.data.find((r) => r.status === "pending");
+        if (pending) setExistingStatus("pending");
+      } catch (error) {
+        console.error("Failed to check existing reports:", err);
+      } finally {
+        setChecking(false);
+      }
+    };
+    checkExisting();
+  }, [targetItem, targetUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,8 +51,14 @@ const ReportButton = ({ targetItem, targetUser, label = "Report" }) => {
       setSubmitting(false);
     }
   };
-  if (success) {
-    return <p className="text-success text-sm">Report submitted. Thank you.</p>;
+  if (checking) return null;
+  if (success || existingStatus === "pending") {
+    return (
+      <p className="text-xs text-subtext flex items-center gap-1">
+        <Flag size={12} />
+        {success ? "Report submitted." : "Report pending review."}
+      </p>
+    );
   }
 
   return (

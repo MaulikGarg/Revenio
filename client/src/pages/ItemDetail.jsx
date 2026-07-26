@@ -25,12 +25,16 @@ export const ItemDetail = () => {
   const [claims, setClaims] = useState([]);
   const [claimsLoading, setClaimsLoading] = useState(false);
   const [claimActionError, setClaimActionError] = useState("");
+  const [myClaims, setMyClaims] = useState([]);
+  const [myClaimsLoading, setMyClaimsLoading] = useState(false);
 
   // can only claim found items
   const isFound = item?.type === "found";
   const isPoster = item?.postedBy._id === user.id;
   const isAdmin = user.role === "admin";
-  const canClaim = item?.status === "active" && isFound && !isPoster;
+  const hasPendingClaim = myClaims.some((c) => c.status === "pending");
+  const canClaim =
+    item?.status === "active" && isFound && !isPoster && !hasPendingClaim;
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -63,6 +67,23 @@ export const ItemDetail = () => {
     fetchClaims();
   }, [item, isPoster, isAdmin]);
 
+  useEffect(() => {
+    if (!item || isPoster || !isFound) return;
+
+    const fetchMyClaims = async () => {
+      setMyClaimsLoading(true);
+      try {
+        const { data } = await api.get(`/claims/item/${item._id}`);
+        setMyClaims(data.data);
+      } catch (error) {
+        console.error("Failed to load your claims:", error);
+      } finally {
+        setMyClaimsLoading(false);
+      }
+    };
+    fetchMyClaims();
+  }, [item, isPoster, isFound]);
+
   if (loading) return <p className="m-8 flex justify-center ">Loading...</p>;
   if (error) return <p className="m-8 text-error">{error}</p>;
   if (!item) return null;
@@ -80,6 +101,8 @@ export const ItemDetail = () => {
         message,
       });
       setClaimSuccess(true);
+      const { data } = await api.get(`/claims/item/${item._id}`);
+      setMyClaims(data.data);
     } catch (error) {
       setClaimError(error.response?.data?.message || "Failed to submit claim.");
     } finally {
@@ -256,7 +279,7 @@ export const ItemDetail = () => {
           <p className="text-error">This item is already {item.status}.</p>
         )}
 
-        {canClaim && !claimSuccess && (
+        {canClaim && !myClaimsLoading && !claimSuccess && (
           <form
             onSubmit={handleClaimSubmit}
             className="flex flex-col gap-3 mt-4 border-t border-overlay pt-4"
@@ -301,6 +324,39 @@ export const ItemDetail = () => {
           <p className="text-success mt-4">
             Claim submitted! The poster will review it.
           </p>
+        )}
+        {!isPoster && myClaims.length > 0 && (
+          <div className="mt-4 border-t border-overlay pt-4">
+            <h2 className="text-lg font-semibold text-text mb-2">
+              Your claim history
+            </h2>
+            <div className="flex flex-col gap-2">
+              {myClaims.map((c) => (
+                <div
+                  key={c._id}
+                  className="border border-overlay rounded-lg p-3"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-subtext">
+                      {new Date(c.createdAt).toLocaleDateString()}
+                    </span>
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full ${
+                        c.status === "approved"
+                          ? "bg-success/20 text-success"
+                          : c.status === "rejected"
+                            ? "bg-error/20 text-error"
+                            : "bg-overlay text-subtext"
+                      }`}
+                    >
+                      {c.status}
+                    </span>
+                  </div>
+                  {c.answer && <p className="text-sm text-text">{c.answer}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </PageContainer>

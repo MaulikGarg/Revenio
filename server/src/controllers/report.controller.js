@@ -54,6 +54,21 @@ const getReports = async (req, res, next) => {
   }
 };
 
+// get the reports made by the logged in user along with a target filter
+// GET /api/reports/mine?targetItem=x or targetUser=x
+const getMyReports = async (req, res, next) => {
+  try {
+    const { targetItem, targetUser } = req.query;
+    const filter = { reportedBy: req.user._id };
+    if (targetItem) filter.targetItem = targetItem;
+    if (targetUser) filter.targetUser = targetUser;
+    const reports = await Report.find(filter).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: reports });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Update report status (reviewed/dismissed) admin only
 // PATCH /api/reports/:id
 const updateReportStatus = async (req, res, next) => {
@@ -84,4 +99,4 @@ const updateReportStatus = async (req, res, next) => {
   }
 };
 
-module.exports = { createReport, getReports, updateReportStatus };
+module.exports = { createReport, getReports, updateReportStatus, getMyReports };
