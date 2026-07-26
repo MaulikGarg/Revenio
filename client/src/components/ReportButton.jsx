@@ -24,18 +24,16 @@ const ReportButton = ({ targetItem, targetUser, label = "Report" }) => {
         targetUser,
         reason,
       });
+      setSuccess(true);
     } catch (error) {
       setError(error.response?.data?.message || "Failed to submit report.");
     } finally {
       setSubmitting(false);
     }
-
-    if (success) {
-      return (
-        <p className="text-success text-sm">Report submitted. Thank you.</p>
-      );
-    }
   };
+  if (success) {
+    return <p className="text-success text-sm">Report submitted. Thank you.</p>;
+  }
 
   return (
     <div>
