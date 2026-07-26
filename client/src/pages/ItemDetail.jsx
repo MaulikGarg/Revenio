@@ -2,12 +2,15 @@ import { useParams } from "react-router-dom";
 import api from "../api/axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+
 import PageContainer from "../components/PageContainer";
 import ClaimsReviewPanel from "../components/item/ClaimsReviewPanel";
 import ClaimForm from "../components/item/ClaimForm";
 import MyClaimHistory from "../components/item/MyClaimHistory";
 import ItemHeader from "../components/item/ItemHeader";
 import ItemActions from "../components/item/ItemActions";
+import SuggestionForm from "../components/item/SuggestionForm";
+import SuggestionsReviewPanel from "../components/item/SuggestionsReviewPanel";
 
 export const ItemDetail = () => {
   const { id } = useParams();
@@ -19,6 +22,7 @@ export const ItemDetail = () => {
   const [myClaims, setMyClaims] = useState([]);
   const [myClaimsLoading, setMyClaimsLoading] = useState(false);
 
+  const isLost = item?.type === "lost";
   const isFound = item?.type === "found";
   const isPoster = item?.postedBy._id === user.id;
   const isAdmin = user.role === "admin";
@@ -96,6 +100,14 @@ export const ItemDetail = () => {
           canMarkReturned={canMarkReturned}
           onMarkReturned={handleMarkReturned}
         />
+
+        {isLost && !isPoster && !isAdmin && item.status === "active" && (
+          <SuggestionForm item={item} />
+        )}
+
+        {isLost && (isPoster || isAdmin) && (
+          <SuggestionsReviewPanel item={item} />
+        )}
 
         {(isPoster || isAdmin) && isFound && (
           <ClaimsReviewPanel item={item} onItemUpdate={setItem} />
