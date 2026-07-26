@@ -49,8 +49,8 @@ const getReports = async (req, res, next) => {
     res
       .status(200)
       .json({ success: true, count: reports.length, data: reports });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 

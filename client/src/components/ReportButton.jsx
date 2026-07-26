@@ -21,7 +21,7 @@ const ReportButton = ({ targetItem, targetUser, label = "Report" }) => {
         const pending = data.data.find((r) => r.status === "pending");
         if (pending) setExistingStatus("pending");
       } catch (error) {
-        console.error("Failed to check existing reports:", err);
+        console.error("Failed to check existing reports:", error);
       } finally {
         setChecking(false);
       }
@@ -66,7 +66,7 @@ const ReportButton = ({ targetItem, targetUser, label = "Report" }) => {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-1 text-xs text-subtext hover:text-error transition-colors"
+          className="flex items-center gap-1 text-xs text-subtext hover:text-error transition-colors cursor-pointer"
         >
           <Flag size={12} />
           {label}
@@ -86,14 +86,14 @@ const ReportButton = ({ targetItem, targetUser, label = "Report" }) => {
             <button
               type="submit"
               disabled={submitting}
-              className="text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 disabled:opacity-50 transition-colors"
+              className="text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 disabled:opacity-50 transition-colors cursor-pointer"
             >
               {submitting ? "Submitting..." : "Submit Report"}
             </button>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="text-xs text-subtext hover:text-text transition-colors"
+              className="text-xs text-subtext hover:text-text transition-colors cursor-pointer"
             >
               Cancel
             </button>

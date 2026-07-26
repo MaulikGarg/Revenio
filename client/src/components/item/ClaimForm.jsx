@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../api/axios";
+import { Send } from "lucide-react";
 
 const ClaimForm = ({ item, onClaimSubmitted }) => {
   const [answer, setAnswer] = useState("");
@@ -99,6 +100,7 @@ const ClaimForm = ({ item, onClaimSubmitted }) => {
         disabled={claimSubmitting}
         className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50"
       >
+        <Send size={14} />
         {claimSubmitting ? "Submitting..." : "Submit Claim"}
       </button>
     </form>

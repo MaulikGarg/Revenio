@@ -2,7 +2,15 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
 import PageContainer from "../components/PageContainer";
-import { Users, Flag } from "lucide-react";
+import {
+  Users,
+  Flag,
+  BrushCleaning,
+  Brush,
+  Ban,
+  Check,
+  CircleX,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const REPORT_STATUSES = ["pending", "reviewed", "dismissed"];
@@ -130,8 +138,9 @@ const AdminPanel = () => {
         <button
           onClick={handleCleanup}
           disabled={cleaningUp}
-          className="text-xs bg-error/20 text-error hover:bg-error/30 px-3 py-1.5 rounded-lg disabled:opacity-50 transition-colors"
+          className="inline-flex items-center gap-1 text-xs bg-error/20 text-error hover:bg-error/30 px-3 py-1.5 rounded-lg disabled:opacity-50 transition-colors"
         >
+          <BrushCleaning size={12} />
           {cleaningUp ? "Cleaning up..." : "Run Cleanup"}
         </button>
       </div>
@@ -201,12 +210,13 @@ const AdminPanel = () => {
                     {u._id !== currentUser.id && (
                       <button
                         onClick={() => handleToggleBlock(u._id, u.blocked)}
-                        className={`text-xs px-3 py-1 rounded-lg transition-colors ${
+                        className={`inline-flex items-center gap-1 text-xs px-3 py-1 rounded-lg transition-colors ${
                           u.blocked
                             ? "bg-success/20 text-success hover:bg-success/30"
                             : "bg-error/20 text-error hover:bg-error/30"
                         }`}
                       >
+                        {u.blocked ? <Check size={12} /> : <Ban size={12} />}
                         {u.blocked ? "Unblock" : "Block"}
                       </button>
                     )}
@@ -284,14 +294,16 @@ const AdminPanel = () => {
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={() => handleReportStatus(r._id, "reviewed")}
-                        className="text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors"
+                        className="inline-flex items-center gap-1 text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors"
                       >
+                        <Check size={12} />
                         Mark Reviewed
                       </button>
                       <button
                         onClick={() => handleReportStatus(r._id, "dismissed")}
-                        className="text-xs bg-overlay text-subtext px-3 py-1 rounded-lg hover:opacity-80 transition-colors"
+                        className="inline-flex items-center gap-1 text-xs bg-overlay text-subtext px-3 py-1 rounded-lg hover:opacity-80 transition-colors"
                       >
+                        <CircleX size={12} />
                         Dismiss
                       </button>
                     </div>

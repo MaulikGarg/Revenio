@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axios";
 import ReportButton from "../ReportButton";
+import { Check, CircleX, Trash2 } from "lucide-react";
 
 const ClaimsReviewPanel = ({ item, onItemUpdate }) => {
   const { user } = useAuth();
@@ -117,14 +118,16 @@ const ClaimsReviewPanel = ({ item, onItemUpdate }) => {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleClaimAction(claim._id, "approved")}
-                        className="text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors font-medium"
+                        className="inline-flex items-center gap-1s text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors font-medium cursor-pointer"
                       >
+                        <Check size={12} />
                         Approve
                       </button>
                       <button
                         onClick={() => handleClaimAction(claim._id, "rejected")}
-                        className="text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 transition-colors font-medium"
+                        className="inline-flex items-center gap-1s text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 transition-colors font-medium cursor-pointer"
                       >
+                        <CircleX size={12} />
                         Reject
                       </button>
                     </div>
@@ -139,8 +142,9 @@ const ClaimsReviewPanel = ({ item, onItemUpdate }) => {
                 {isAdmin && (
                   <button
                     onClick={() => handleDeleteClaim(claim._id)}
-                    className="text-xs text-error hover:underline"
+                    className="inline-flex items-center gap-1 text-xs text-error hover:bg-error/10 px-2 py-1 rounded-lg cursor-pointer"
                   >
+                    <Trash2 size={12} />
                     Delete Claim
                   </button>
                 )}

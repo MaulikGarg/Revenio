@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axios";
+import { Eye, CircleX, Trash2 } from "lucide-react";
 
 const SuggestionsReviewPanel = ({ item }) => {
   const [suggestions, setSuggestions] = useState([]);
@@ -27,6 +28,7 @@ const SuggestionsReviewPanel = ({ item }) => {
   const handleDismiss = async (suggestionId) => {
     try {
       await api.patch(`/suggestions/${suggestionId}/dismiss`);
+      setSuggestions((prev) => prev.filter((s) => s._id !== suggestionId));
     } catch (error) {
       console.error("Failed to dismiss suggestion:", error);
     }
@@ -66,21 +68,24 @@ const SuggestionsReviewPanel = ({ item }) => {
             <div className="flex gap-2">
               <Link
                 to={`/item/${s.foundItem._id}`}
-                className="text-xs bg-blue/20 text-blue px-3 py-1 rounded-lg hover:bg-blue/30 transition-colors"
+                className="inline-flex items-center gap-1 text-xs bg-blue/20 text-blue px-3 py-1 rounded-lg hover:bg-blue/30 transition-colors"
               >
+                <Eye size={12} />
                 View & Claim if yours
               </Link>
               <button
                 onClick={() => handleDismiss(s._id)}
-                className="text-xs text-subtext hover:text-error transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-subtext hover:text-error transition-colors hover:bg-overlay px-2 py-1 rounded-lg"
               >
+                <CircleX size={12} />
                 Not mine
               </button>
               {isAdmin && (
                 <button
                   onClick={() => handleDeleteSuggestion(s._id)}
-                  className="text-xs text-error hover:underline"
+                  className="inline-flex items-center gap-1 text-xs text-error hover:underline"
                 >
+                  <Trash2 size={12} />
                   Delete
                 </button>
               )}

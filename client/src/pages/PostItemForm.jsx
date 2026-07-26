@@ -11,6 +11,8 @@ import {
   Shapes,
   MapPin,
   HelpCircle,
+  ExternalLink,
+  Send,
 } from "lucide-react";
 
 const PostItemForm = ({ type = "found" }) => {
@@ -286,16 +288,18 @@ const PostItemForm = ({ type = "found" }) => {
           <button
             type="button"
             onClick={handleCheckExisting}
-            className="text-xs text-accent-500 hover:underline whitespace-nowrap cursor-pointer underline"
+            className="inline-flex items-center gap-1 text-xs text-accent-500 hover:underline whitespace-nowrap cursor-pointer underline"
           >
-            Check now
+            <ExternalLink size={12} />
+            Check
           </button>
         </div>
         <button
           type="submit"
           disabled={submitting || !confirmedCheck}
-          className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed self-center font-medium cursor-pointer transition"
+          className="inline-flex items-center gap-1 bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed self-center font-medium cursor-pointer transition"
         >
+          <Send size={15} />
           {submitting
             ? statusText
             : isFound

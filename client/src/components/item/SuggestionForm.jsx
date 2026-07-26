@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../api/axios";
+import { PackageCheck, CircleX, Send } from "lucide-react";
 
 const SuggestionForm = ({ item }) => {
   const [myFoundItems, setMyFoundItems] = useState([]);
@@ -17,7 +18,7 @@ const SuggestionForm = ({ item }) => {
         });
         setMyFoundItems(data.data);
       } catch (error) {
-        console.error("Failed to load your found items:", err);
+        console.error("Failed to load your found items:", error);
       }
     };
     fetchMyFoundItems();
@@ -36,6 +37,7 @@ const SuggestionForm = ({ item }) => {
         lostItem: item._id,
         foundItem: selectedFoundItem,
       });
+      setSuccess(true);
     } catch (error) {
       setError(error.response?.data?.message || "Failed to submit suggestion.");
     } finally {
@@ -55,7 +57,7 @@ const SuggestionForm = ({ item }) => {
           onClick={() => setOpen(true)}
           className="bg-blue/20 text-blue hover:bg-blue/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
-          I found this item
+          <PackageCheck size={14} />I found this item
         </button>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -81,6 +83,7 @@ const SuggestionForm = ({ item }) => {
               disabled={submitting}
               className="bg-blue/20 text-blue hover:bg-blue/30 px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
             >
+              <Send size={14} />
               {submitting ? "Sending..." : "Send Suggestion"}
             </button>
             <button
@@ -88,6 +91,7 @@ const SuggestionForm = ({ item }) => {
               onClick={() => setOpen(false)}
               className="text-xs text-subtext hover:text-text"
             >
+              <CircleX size={12} />
               Cancel
             </button>
           </div>
