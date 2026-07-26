@@ -33,6 +33,8 @@ export const ItemDetail = () => {
   const [claimActionError, setClaimActionError] = useState("");
   const [myClaims, setMyClaims] = useState([]);
   const [myClaimsLoading, setMyClaimsLoading] = useState(false);
+  const [myLostItems, setMyLostItems] = useState([]);
+  const [linkedLostItem, setLinkedLostItem] = useState("");
 
   // can only claim found items
   const isFound = item?.type === "found";
@@ -97,6 +99,20 @@ export const ItemDetail = () => {
     fetchMyClaims();
   }, [item, isPoster, isFound]);
 
+  useEffect(() => {
+    if (!canClaim) return;
+
+    const fetchMyLostItems = async () => {
+      try {
+        const { data } = await api.get("/items/mine/lost");
+        setMyLostItems(data.data);
+      } catch (error) {
+        console.error("Failed to load your lost items:", error);
+      }
+    };
+    fetchMyLostItems();
+  }, [canClaim]);
+
   if (loading) return <p className="m-8 flex justify-center ">Loading...</p>;
   if (error) return <p className="m-8 text-error">{error}</p>;
   if (!item) return null;
@@ -112,6 +128,7 @@ export const ItemDetail = () => {
         itemId: item._id,
         answer,
         message,
+        linkedLostItem: linkedLostItem || null,
       });
       setClaimSuccess(true);
       const { data } = await api.get(`/claims/item/${item._id}`);
@@ -272,6 +289,7 @@ export const ItemDetail = () => {
                           <strong>Answer:</strong> {claim.answer}
                         </p>
                       )}
+
                       {claim.message && (
                         <p className="text-sm text-subtext mb-2">
                           "{claim.message}"
@@ -353,6 +371,26 @@ export const ItemDetail = () => {
               onChange={(e) => setMessage(e.target.value)}
               className="border border-overlay bg-surface text-text placeholder-subtext p-2 rounded-lg w-full"
             />
+
+            {myLostItems.length > 0 && (
+              <div>
+                <label className="text-sm text-subtext mb-1 block">
+                  Is this the item you reported lost? (optional)
+                </label>
+                <select
+                  value={linkedLostItem}
+                  onChange={(e) => setLinkedLostItem(e.target.value)}
+                  className="border border-overlay bg-surface text-text p-2 rounded-lg w-full"
+                >
+                  <option value="">Don't link a lost post</option>
+                  {myLostItems.map((li) => (
+                    <option key={li._id} value={li._id}>
+                      {li.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <button
               type="submit"

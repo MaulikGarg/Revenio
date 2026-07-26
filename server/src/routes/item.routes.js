@@ -4,6 +4,7 @@ const {
   getItems,
   getItemById,
   updateItemStatus,
+  getMyLostItems,
 } = require("../controllers/item.controller");
 const { protect } = require("../middleware/auth.middleware");
 
@@ -13,5 +14,6 @@ router.get("/", getItems);
 router.get("/:id", getItemById);
 router.post("/", protect, createItem);
 router.patch("/:id/status", protect, updateItemStatus);
+router.get("/mine/lost", protect, getMyLostItems);
 
 module.exports = router;

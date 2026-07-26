@@ -19,6 +19,11 @@ const claimSchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    linkedLostItem: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Item",
+      default: null,
+    },
   },
   { timestamps: true },
 );

@@ -4,7 +4,7 @@ const Item = require("../models/item.model");
 // POST /api/claims
 const createClaim = async (req, res, next) => {
   try {
-    const { itemId, answer, message } = req.body;
+    const { itemId, answer, message, linkedLostItem } = req.body;
 
     const item = await Item.findById(itemId);
     if (!item) {
@@ -47,6 +47,7 @@ const createClaim = async (req, res, next) => {
       claimantId: req.user._id,
       answer,
       message,
+      linkedLostItem: linkedLostItem || null,
     });
 
     res.status(201).json({ success: true, data: claim });
@@ -140,6 +141,10 @@ const updateClaimStatus = async (req, res, next) => {
         },
         { status: "rejected" },
       );
+
+      if (claim.linkedLostItem) {
+        await Item.findByIdAndDelete(claim.linkedLostItem);
+      }
     }
 
     res.status(200).json({ success: true, data: claim });

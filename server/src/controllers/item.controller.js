@@ -137,4 +137,23 @@ const updateItemStatus = async (req, res, next) => {
   }
 };
 
-module.exports = { createItem, getItems, getItemById, updateItemStatus };
+const getMyLostItems = async (req, res, next) => {
+  try {
+    const items = await Item.find({
+      postedBy: req.user._id,
+      type: "lost",
+      status: "active",
+    }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: items });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createItem,
+  getItems,
+  getItemById,
+  updateItemStatus,
+  getMyLostItems,
+};
