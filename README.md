@@ -36,6 +36,7 @@ Revenio/
 │   │   │   ├── Footer.jsx
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── PageContainer.jsx
+│   │   │   ├── ReportButton.jsx
 │   │   │   └── ProtectedRoute.jsx
 │   │   ├── context/
 │   │   │   ├── AuthContext.jsx
@@ -58,40 +59,42 @@ Revenio/
 │   └── vite.config.js
 │
 └── server/
-    ├── src/
-    │   ├── config/
-    │   │   ├── cloudinary.js
-    │   │   └── db.js
-    │   ├── controllers/
-    │   │   ├── admin.controller.js
-    │   │   ├── auth.controller.js
-    │   │   ├── claim.controller.js
-    │   │   ├── item.controller.js
-    │   │   ├── report.controller.js
-    │   │   └── upload.controller.js
-    │   ├── middleware/
-    │   │   ├── auth.middleware.js
-    │   │   ├── error.middleware.js
-    │   │   └── upload.middleware.js
-    │   ├── models/
-    │   │   ├── claim.model.js
-    │   │   ├── item.model.js
-    │   │   ├── report.model.js
-    │   │   └── user.model.js
-    │   ├── routes/
-    │   │   ├── admin.routes.js
-    │   │   ├── auth.routes.js
-    │   │   ├── claim.routes.js
-    │   │   ├── item.routes.js
-    │   │   ├── report.routes.js
-    │   │   └── upload.routes.js
-    │   └── utils/
-    │       └── app.js
-    ├── .env
-    ├── .gitignore
-    ├── package.json
-    ├── package-lock.json
-    └── server.js
+│    ├── scripts/
+│    │   ├── seed.js
+│    │   ├── unseed.js
+│    ├── src/
+│    │   ├── config/
+│    │   │   ├── cloudinary.js
+│    │   │   └── db.js
+│    │   ├── controllers/
+│    │   │   ├── admin.controller.js
+│    │   │   ├── auth.controller.js
+│    │   │   ├── claim.controller.js
+│    │   │   ├── item.controller.js
+│    │   │   ├── report.controller.js
+│    │   │   └── upload.controller.js
+│    │   ├── middleware/
+│    │   │   ├── auth.middleware.js
+│    │   │   ├── error.middleware.js
+│    │   │   └── upload.middleware.js
+│    │   ├── models/
+│    │   │   ├── claim.model.js
+│    │   │   ├── item.model.js
+│    │   │   ├── report.model.js
+│    │   │   └── user.model.js
+│    │   ├── routes/
+│    │   │   ├── admin.routes.js
+│    │   │   ├── auth.routes.js
+│    │   │   ├── claim.routes.js
+│    │   │   ├── item.routes.js
+│    │   │   ├── report.routes.js
+│    │   │   └── upload.routes.js
+│    │   └── app.js
+│    ├── .env
+│    ├── .gitignore
+│    ├── package.json
+│    ├── package-lock.json
+│    └── server.js
 ```
 
 ## Data Models
@@ -161,6 +164,20 @@ npm run dev
 1. Sign up at [cloudinary.com](https://cloudinary.com)
 2. Copy your Cloud Name, API Key, and API Secret from the dashboard into the backend `.env`
 
+### Dummy data
+
+1. Generate with:
+
+```bash
+npm run seed
+```
+
+2. Delete with:
+
+```bash
+npm run unseed
+```
+
 ## API Overview
 
 | Method | Route                        | Description                                             |
@@ -170,12 +187,14 @@ npm run dev
 | GET    | `/api/items`                 | List items (supports `type`, `category`, `status`, `q`) |
 | POST   | `/api/items`                 | Create a lost/found item                                |
 | GET    | `/api/items/:id`             | Get single item                                         |
+| GET    | `/api/items/mine/lost`       | Get lost items of logged in user                        |
 | PATCH  | `/api/items/:id/status`      | Update item status                                      |
 | POST   | `/api/claims`                | Submit a claim                                          |
 | GET    | `/api/claims/item/:itemId`   | Get claims for an item (poster/admin)                   |
 | PATCH  | `/api/claims/:id`            | Approve/reject a claim                                  |
 | POST   | `/api/reports`               | Submit a report                                         |
 | GET    | `/api/reports`               | List reports (admin)                                    |
+| GET    | `/api/reports/mine`          | List reports of target user/item                        |
 | PATCH  | `/api/reports/:id`           | Update report status (admin)                            |
 | GET    | `/api/admin/users`           | List all users (admin)                                  |
 | PATCH  | `/api/admin/users/:id/block` | Block/unblock a user (admin)                            |
