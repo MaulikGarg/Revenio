@@ -3,6 +3,7 @@ const {
   createSuggestion,
   getSuggestionsForLostItem,
   dismissSuggestion,
+  deleteSuggestion,
 } = require("../controllers/suggestion.controller");
 const { protect } = require("../middleware/auth.middleware");
 

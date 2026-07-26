@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axios";
 
 const SuggestionsReviewPanel = ({ item }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const isAdmin = user.role === "admin";
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -26,6 +29,16 @@ const SuggestionsReviewPanel = ({ item }) => {
       await api.patch(`/suggestions/${suggestionId}/dismiss`);
     } catch (error) {
       console.error("Failed to dismiss suggestion:", error);
+    }
+  };
+
+  const handleDeleteSuggestion = async (suggestionId) => {
+    if (!window.confirm("Permanently delete this suggestion?")) return;
+    try {
+      await api.delete(`/suggestions/${suggestionId}`);
+      setSuggestions((prev) => prev.filter((s) => s._id !== suggestionId));
+    } catch (error) {
+      console.error("Failed to delete suggestion:", error);
     }
   };
 
@@ -63,6 +76,14 @@ const SuggestionsReviewPanel = ({ item }) => {
               >
                 Not mine
               </button>
+              {isAdmin && (
+                <button
+                  onClick={() => handleDeleteSuggestion(s._id)}
+                  className="text-xs text-error hover:underline"
+                >
+                  Delete
+                </button>
+              )}
             </div>
           </div>
         ))}

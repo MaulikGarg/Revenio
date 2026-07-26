@@ -157,4 +157,32 @@ const updateClaimStatus = async (req, res, next) => {
   }
 };
 
-module.exports = { createClaim, getClaimsForItem, updateClaimStatus };
+// Delete a claim (admin only, hard delete)
+// DELETE /api/claims/:id
+const deleteClaim = async (req, res, next) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ success: false, message: "Admin access required" });
+    }
+
+    const claim = await Claim.findByIdAndDelete(req.params.id);
+    if (!claim) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Claim not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Claim deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createClaim,
+  getClaimsForItem,
+  updateClaimStatus,
+  deleteClaim,
+};

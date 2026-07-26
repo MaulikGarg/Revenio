@@ -46,6 +46,18 @@ const ClaimsReviewPanel = ({ item, onItemUpdate }) => {
     }
   };
 
+  const handleDeleteClaim = async (claimId) => {
+    if (!window.confirm("Permanently delete this claim?")) return;
+    try {
+      await api.delete(`/claims/${claimId}`);
+      setClaims((prev) => prev.filter((c) => c._id !== claimId));
+    } catch (error) {
+      setClaimActionError(
+        error.response?.data?.message || "Failed to delete claim.",
+      );
+    }
+  };
+
   return (
     <div className="mt-4 border-t border-overlay pt-4">
       <h2 className="text-xl font-semibold text-text mb-3">
@@ -123,6 +135,14 @@ const ClaimsReviewPanel = ({ item, onItemUpdate }) => {
                     targetUser={claim.claimantId._id}
                     label="Report Claimant"
                   />
+                )}
+                {isAdmin && (
+                  <button
+                    onClick={() => handleDeleteClaim(claim._id)}
+                    className="text-xs text-error hover:underline"
+                  >
+                    Delete Claim
+                  </button>
                 )}
               </div>
             </div>

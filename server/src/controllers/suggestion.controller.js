@@ -120,8 +120,31 @@ const dismissSuggestion = async (req, res, next) => {
   }
 };
 
+// hard delete suggestion, admin only
+const deleteSuggestion = async (req, res, next) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ success: false, message: "Admin access required" });
+    }
+
+    const suggestion = await Suggestion.findByIdAndDelete(req.params.id);
+    if (!suggestion) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Suggestion not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Suggestion deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createSuggestion,
   getSuggestionsForLostItem,
   dismissSuggestion,
+  deleteSuggestion,
 };
