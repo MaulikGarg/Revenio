@@ -45,6 +45,9 @@ export const ItemDetail = () => {
     !isPoster &&
     !isAdmin &&
     !hasPendingClaim;
+  const hasApprovedClaim = myClaims.some((c) => c.status === "approved");
+  const canMarkReturned =
+    item?.status === "claimed" && (isPoster || isAdmin || hasApprovedClaim);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -138,6 +141,20 @@ export const ItemDetail = () => {
     }
   };
 
+  const handleMarkReturned = async () => {
+    setClaimActionError("");
+    try {
+      const { data } = await api.patch(`/items/${item._id}/status`, {
+        status: "returned",
+      });
+      setItem(data.data);
+    } catch (error) {
+      setClaimActionError(
+        error.response?.data?.message || "Failed to mark as returned.",
+      );
+    }
+  };
+
   return (
     <PageContainer maxWidth="max-w-xl" className="mt-10">
       <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm">
@@ -191,6 +208,15 @@ export const ItemDetail = () => {
         <p className="mb-4 text-sm text-subtext">
           Posted by {item.postedBy.name}
         </p>
+
+        {canMarkReturned && (
+          <button
+            onClick={handleMarkReturned}
+            className="bg-success/20 text-success hover:bg-success/30 px-4 py-2 rounded-lg text-sm font-medium mb-4 transition-colors"
+          >
+            Mark as Returned
+          </button>
+        )}
 
         {!isPoster && (
           <div className="flex gap-4 mb-4">
