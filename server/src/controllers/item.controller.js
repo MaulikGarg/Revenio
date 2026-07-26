@@ -39,12 +39,13 @@ const createItem = async (req, res, next) => {
 
 const getItems = async (req, res, next) => {
   try {
-    const { type, category, status, q } = req.query;
+    const { type, category, status, q, mine } = req.query;
     const filter = {};
     if (type) filter.type = type;
     if (category) filter.category = category;
     if (status) filter.status = status;
     if (q) filter.$text = { $search: q };
+    if (mine === "true") filter.postedBy = req.user._id;
 
     // populate the "postedBy" in item with poster name and mail
     // this is not async so it does not execute, returns query

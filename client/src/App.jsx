@@ -26,6 +26,16 @@ function App() {
             }
           />
 
+          {/* Own items */}
+          <Route
+            path="/my-items"
+            element={
+              <ProtectedRoute>
+                <ItemsDashboard mine />
+              </ProtectedRoute>
+            }
+          />
+
           {/* The item page */}
           <Route
             path="/item/:id"

@@ -174,7 +174,7 @@ export const ItemDetail = () => {
 
   return (
     <PageContainer maxWidth="max-w-xl" className="mt-10">
-      <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm">
+      <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm ">
         <h1 className="text-3xl font-heading mb-2 text-text">{item.title}</h1>
         <p className="text-sm text-subtext mb-4">
           <span

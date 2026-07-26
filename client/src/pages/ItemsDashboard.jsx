@@ -14,6 +14,7 @@ import {
   Plus,
   PackageSearch,
   PackageCheck,
+  Package2,
 } from "lucide-react";
 
 const CATEGORY_ICONS = {
@@ -42,7 +43,7 @@ const CATEGORY_COLORS = {
 
 const CATEGORIES = ["ID Card", "Bottle", "Electronics", "Book", "Bag", "Other"];
 
-export const ItemsDashboard = ({ type = "lost" }) => {
+export const ItemsDashboard = ({ type, mine = false }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -68,6 +69,7 @@ export const ItemsDashboard = ({ type = "lost" }) => {
         const { data } = await api.get("/items", {
           params: {
             type,
+            mine: mine || undefined,
             q: debouncedSearch || undefined,
             category: category || undefined,
           },
@@ -85,15 +87,21 @@ export const ItemsDashboard = ({ type = "lost" }) => {
 
   const isLost = type === "lost";
 
-  const title = isLost ? "Lost Items" : "Found Items";
-  const placeholder = isLost ? "Search lost items..." : "Search found items...";
-  const emptyMessage = isLost
-    ? "No lost items listed."
-    : "No found items listed.";
+  const title = mine ? "My Items" : isLost ? "Lost Items" : "Found Items";
+  const placeholder = mine
+    ? "Search your items"
+    : isLost
+      ? "Search lost items..."
+      : "Search found items...";
+  const emptyMessage = mine
+    ? "No items found."
+    : isLost
+      ? "No lost items listed."
+      : "No found items listed.";
   const postLink = isLost ? "/post-lost" : "/post-found";
   const postLabel = isLost ? "Post Lost Item" : "Post Found Item";
-  const headingColor = isLost ? "text-peach" : "text-blue";
-  const HeadingIcon = isLost ? PackageSearch : PackageCheck;
+  const headingColor = mine ? "text-teal" : isLost ? "text-peach" : "text-blue";
+  const HeadingIcon = mine ? Package2 : isLost ? PackageSearch : PackageCheck;
 
   return (
     <PageContainer maxWidth="max-w-6xl" className="py-6">
@@ -102,13 +110,15 @@ export const ItemsDashboard = ({ type = "lost" }) => {
           <HeadingIcon size={32} className={headingColor} />
           <h1 className={`text-4xl font-heading ${headingColor}`}>{title}</h1>
         </div>
-        <Link
-          to={postLink}
-          className="flex items-center justify-center gap-1 bg-accent-500 text-white hover:bg-accent-600 px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto"
-        >
-          <Plus size={16} />
-          {postLabel}
-        </Link>
+        {!mine && (
+          <Link
+            to={postLink}
+            className="flex items-center justify-center gap-1 bg-accent-500 text-white hover:bg-accent-600 px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto"
+          >
+            <Plus size={16} />
+            {postLabel}
+          </Link>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
@@ -152,54 +162,58 @@ export const ItemsDashboard = ({ type = "lost" }) => {
 
       {!loading && !error && items.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items.map((item) => (
-            <Link
-              key={item._id}
-              to={`/item/${item._id}`}
-              className={`group bg-surface border border-overlay ${isLost ? "border-l-4 border-l-peach" : "border-l-4 border-l-blue"} rounded-lg p-4 transition hover:outline-none hover:border-accent-600 hover:ring-1 hover:ring-accent-500`}
-            >
-              {item.photoUrl && (
-                <img
-                  src={item.photoUrl}
-                  alt={item.title}
-                  className="mb-3 rounded-md h-32 w-full object-cover border border-overlay"
-                />
-              )}
+          {items.map((item) => {
+            const borderClass =
+              item.type === "lost" ? "border-l-peach" : "border-l-blue";
+            return (
+              <Link
+                key={item._id}
+                to={`/item/${item._id}`}
+                className={`group bg-surface border border-overlay border-l-4 ${borderClass} rounded-lg p-4 transition hover:outline-none hover:border-accent-600 hover:ring-1 hover:ring-accent-500`}
+              >
+                {item.photoUrl && (
+                  <img
+                    src={item.photoUrl}
+                    alt={item.title}
+                    className="mb-3 rounded-md h-32 w-full object-cover border border-overlay"
+                  />
+                )}
 
-              <h2 className="text-lg text-text mb-1 group-hover:text-accent-500 transition-colors">
-                {item.title}
-              </h2>
+                <h2 className="text-lg text-text mb-1 group-hover:text-accent-500 transition-colors">
+                  {item.title}
+                </h2>
 
-              <div className="flex items-center gap-2 mb-2">
-                {(() => {
-                  const Icon = CATEGORY_ICONS[item.category] || Package;
-                  const colorClass =
-                    CATEGORY_COLORS[item.category] || CATEGORY_COLORS.Other;
-                  return (
-                    <span
-                      className={`flex items-center gap-1 ${colorClass} text-xs px-2 py-0.5 rounded-full`}
-                    >
-                      <Icon size={12} />
-                      {item.category}
-                    </span>
-                  );
-                })()}
-                <span
-                  className={`text-xs font-medium ${STATUS_COLORS[item.status] || "text-subtext"}`}
-                >
-                  {item.status}
-                </span>
-              </div>
+                <div className="flex items-center gap-2 mb-2">
+                  {(() => {
+                    const Icon = CATEGORY_ICONS[item.category] || Package;
+                    const colorClass =
+                      CATEGORY_COLORS[item.category] || CATEGORY_COLORS.Other;
+                    return (
+                      <span
+                        className={`flex items-center gap-1 ${colorClass} text-xs px-2 py-0.5 rounded-full`}
+                      >
+                        <Icon size={12} />
+                        {item.category}
+                      </span>
+                    );
+                  })()}
+                  <span
+                    className={`text-xs font-medium ${STATUS_COLORS[item.status] || "text-subtext"}`}
+                  >
+                    {item.status}
+                  </span>
+                </div>
 
-              <p className="text-sm text-subtext line-clamp-2 mb-2">
-                {item.description}
-              </p>
+                <p className="text-sm text-subtext line-clamp-2 mb-2">
+                  {item.description}
+                </p>
 
-              <p className="text-xs text-subtext">
-                {item.location} · {new Date(item.date).toLocaleDateString()}
-              </p>
-            </Link>
-          ))}
+                <p className="text-xs text-subtext">
+                  {item.location} · {new Date(item.date).toLocaleDateString()}
+                </p>
+              </Link>
+            );
+          })}
         </div>
       )}
     </PageContainer>
