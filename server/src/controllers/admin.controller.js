@@ -1,4 +1,8 @@
 const User = require("../models/user.model");
+const Item = require("../models/item.model");
+const Claim = require("../models/claim.model");
+const Report = require("../models/report.model");
+const Suggestion = require("../models/suggestion.model");
 
 // admin only, returns all users
 // GET /api/admin/users
@@ -31,4 +35,48 @@ const manageUserBlock = async (req, res, next) => {
   }
 };
 
-module.exports = { getUsers, manageUserBlock };
+// POWERRRRR COMMAND
+// deletes everything resolved
+const cleanupResolved = async (req, res, next) => {
+  try {
+    const returnedItems = await Item.find({ status: "returned" }).select("_id");
+    const returnedItemIds = returnedItems.map((i) => i._id);
+    const claimsFromReturned = await Claim.deleteMany({
+      itemId: { $in: returnedItemIds },
+    });
+    const suggestionsFromReturned = await Suggestion.deleteMany({
+      $or: [
+        { foundItem: { $in: returnedItemIds } },
+        { lostItem: { $in: returnedItemIds } },
+      ],
+    });
+    const itemsDeleted = await Item.deleteMany({ status: "returned" });
+
+    // PURGE ZA LEFTOVERS!
+    const reportsDeleted = await Report.deleteMany({
+      status: { $in: ["reviewed", "dismissed"] },
+    });
+    const rejectedClaimsDeleted = await Claim.deleteMany({
+      status: "rejected",
+    });
+    const dismissedSuggestionsDeleted = await Suggestion.deleteMany({
+      status: "dismissed",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Cleanup complete",
+      deleted: {
+        items: itemsDeleted.deletedCount,
+        claimsFromReturnedItems: claimsFromReturned.deletedCount,
+        suggestionsFromReturnedItems: suggestionsFromReturned.deletedCount,
+        reports: reportsDeleted.deletedCount,
+        rejectedClaims: rejectedClaimsDeleted.deletedCount,
+        dismissedSuggestions: dismissedSuggestionsDeleted.deletedCount,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = { getUsers, manageUserBlock, cleanupResolved };

@@ -1,6 +1,27 @@
 import ReportButton from "../ReportButton";
+import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
-const ItemActions = ({ item, isPoster, canMarkReturned, onMarkReturned }) => {
+const ItemActions = ({
+  item,
+  isPoster,
+  isAdmin,
+  canMarkReturned,
+  onMarkReturned,
+}) => {
+  const navigate = useNavigate();
+  const isLostType = (item) => item.type === "lost";
+
+  const handleDeleteItem = async () => {
+    if (!window.confirm("Permanently delete this item? This cannot be undone."))
+      return;
+    try {
+      await api.delete(`/items/${item._id}`);
+      navigate(isLostType(item) ? "/dashboard/lost" : "/dashboard/found");
+    } catch (error) {
+      console.error("Failed to delete item:", error);
+    }
+  };
   return (
     <>
       {canMarkReturned && (
@@ -17,6 +38,15 @@ const ItemActions = ({ item, isPoster, canMarkReturned, onMarkReturned }) => {
           <ReportButton targetItem={item._id} label="Report Item" />
           <ReportButton targetUser={item.postedBy._id} label="Report User" />
         </div>
+      )}
+
+      {isAdmin && (
+        <button
+          onClick={handleDeleteItem}
+          className="text-xs text-error hover:underline mb-4"
+        >
+          Delete Item
+        </button>
       )}
     </>
   );

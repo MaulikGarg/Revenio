@@ -97,6 +97,7 @@ export const ItemDetail = () => {
         <ItemActions
           item={item}
           isPoster={isPoster}
+          isAdmin={isAdmin}
           canMarkReturned={canMarkReturned}
           onMarkReturned={handleMarkReturned}
         />

@@ -5,6 +5,7 @@ const User = require("../src/models/user.model");
 const Item = require("../src/models/item.model");
 const Claim = require("../src/models/claim.model");
 const Report = require("../src/models/report.model");
+const Suggestion = require("../src/models/suggestion.model");
 
 const SEED_TAG = "seed-data";
 
@@ -126,6 +127,24 @@ const seed = async () => {
 
   const insertedReports = await Report.insertMany(reportsToInsert);
   console.log(`Seeded ${insertedReports.length} reports.`);
+
+  const suggestionsToInsert = [
+    {
+      lostItem: insertedLost[2]._id,
+      foundItem: insertedFound[2]._id,
+      suggestedBy: founder._id,
+      status: "pending",
+    },
+    {
+      lostItem: insertedLost[3]._id,
+      foundItem: insertedFound[3]._id,
+      suggestedBy: founder._id,
+      status: "dismissed",
+    },
+  ];
+
+  const insertedSuggestions = await Suggestion.insertMany(suggestionsToInsert);
+  console.log(`Seeded ${insertedSuggestions.length} suggestions.`);
 
   await mongoose.disconnect();
   process.exit(0);

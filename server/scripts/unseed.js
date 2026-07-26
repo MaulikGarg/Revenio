@@ -5,6 +5,7 @@ const User = require("../src/models/user.model");
 const Item = require("../src/models/item.model");
 const Claim = require("../src/models/claim.model");
 const Report = require("../src/models/report.model");
+const Suggestion = require("../src/models/suggestion.model");
 
 const unseed = async () => {
   await connDB();
@@ -28,6 +29,11 @@ const unseed = async () => {
 
   const userResult = await User.deleteMany({ email: /@revenio\.test$/ });
   console.log(`Deleted ${userResult.deletedCount} seed users.`);
+
+  const suggestionResult = await Suggestion.deleteMany({
+    suggestedBy: { $in: seedUserIds },
+  });
+  console.log(`Deleted ${suggestionResult.deletedCount} seeded suggestions.`);
 
   await mongoose.disconnect();
   process.exit(0);

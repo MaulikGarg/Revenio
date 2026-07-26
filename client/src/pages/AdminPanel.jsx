@@ -20,6 +20,8 @@ const AdminPanel = () => {
   const [reportStatusFilter, setReportStatusFilter] = useState("");
 
   const [actionError, setActionError] = useState("");
+  const [cleanupResult, setCleanupResult] = useState(null);
+  const [cleaningUp, setCleaningUp] = useState(false);
 
   const roleColors = {
     admin: "text-error",
@@ -99,9 +101,48 @@ const AdminPanel = () => {
     }
   };
 
+  const handleCleanup = async () => {
+    if (
+      !window.confirm(
+        "Delete all resolved reports, rejected claims, dismissed suggestions, and returned items? This cannot be undone.",
+      )
+    )
+      return;
+    setCleaningUp(true);
+    setCleanupResult(null);
+    try {
+      const { data } = await api.delete("/admin/cleanup");
+      setCleanupResult(data.deleted);
+    } catch (error) {
+      setActionError(error.response?.data?.message || "Cleanup failed.");
+    } finally {
+      setCleaningUp(false);
+    }
+  };
+
   return (
     <PageContainer maxWidth="max-w-4xl" className="py-6">
       <h1 className="text-4xl font-heading text-text mb-6">The Admin Panel</h1>
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-sm text-subtext">
+          Remove old resolved data to keep the database tidy.
+        </p>
+        <button
+          onClick={handleCleanup}
+          disabled={cleaningUp}
+          className="text-xs bg-error/20 text-error hover:bg-error/30 px-3 py-1.5 rounded-lg disabled:opacity-50 transition-colors"
+        >
+          {cleaningUp ? "Cleaning up..." : "Run Cleanup"}
+        </button>
+      </div>
+
+      {cleanupResult && (
+        <p className="text-success text-sm mb-4">
+          Deleted {cleanupResult.items} items, {cleanupResult.reports} reports,{" "}
+          {cleanupResult.rejectedClaims} rejected claims,{" "}
+          {cleanupResult.dismissedSuggestions} dismissed suggestions.
+        </p>
+      )}
 
       <div className="flex gap-2 mb-6 border-b border-overlay">
         <button
