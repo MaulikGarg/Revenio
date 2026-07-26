@@ -138,13 +138,15 @@ const updateItemStatus = async (req, res, next) => {
   }
 };
 
-const getMyLostItems = async (req, res, next) => {
+const getMyItems = async (req, res, next) => {
   try {
-    const items = await Item.find({
+    const { type } = req.query;
+    const filter = {
       postedBy: req.user._id,
-      type: "lost",
       status: "active",
-    }).sort({ createdAt: -1 });
+    };
+    if (type) filter.type = type;
+    const items = await Item.find(filter).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: items });
   } catch (error) {
     next(error);
@@ -156,5 +158,5 @@ module.exports = {
   getItems,
   getItemById,
   updateItemStatus,
-  getMyLostItems,
+  getMyItems,
 };

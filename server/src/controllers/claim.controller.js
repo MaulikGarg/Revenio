@@ -143,6 +143,10 @@ const updateClaimStatus = async (req, res, next) => {
       );
 
       if (claim.linkedLostItem) {
+        await Suggestion.updateMany(
+          { lostItem: claim.linkedLostItem, status: "pending" },
+          { status: "dismissed" },
+        );
         await Item.findByIdAndDelete(claim.linkedLostItem);
       }
     }
