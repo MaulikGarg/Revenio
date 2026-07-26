@@ -16,6 +16,11 @@
     --color-accent-600: #7c3aed;
     --color-success: #40a02b;
     --color-error: #d20f39;
+    --color-blue: #1e66f5;
+    --color-teal: #179299;
+    --color-peach: #fe640b;
+    --color-yellow: #df8e1d;
+    --color-pink: #ea76cb;
 }
 
 .dark {
@@ -29,6 +34,11 @@
     --color-accent-600: #b48ef0;
     --color-success: #a6e3a1;
     --color-error: #f38ba8;
+    --color-blue: #89b4fa;
+    --color-teal: #94e2d5;
+    --color-peach: #fab387;
+    --color-yellow: #f9e2af;
+    --color-pink: #f5c2e7;
 }
 
 body {

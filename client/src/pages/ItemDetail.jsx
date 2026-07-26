@@ -6,6 +6,12 @@ import { useAuth } from "../context/AuthContext";
 import PageContainer from "../components/PageContainer";
 import ReportButton from "../components/ReportButton";
 
+const STATUS_COLORS = {
+  active: "text-teal",
+  claimed: "text-yellow",
+  returned: "text-subtext",
+};
+
 export const ItemDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -133,8 +139,15 @@ export const ItemDetail = () => {
       <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm">
         <h1 className="text-3xl font-heading mb-2 text-text">{item.title}</h1>
         <p className="text-sm text-subtext mb-4">
-          <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
-            {item.type === "lost" ? "Lost" : "Found"} · {item.status}
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full ${item.type === "lost" ? "bg-peach/20 text-peach" : "bg-blue/20 text-blue"}`}
+          >
+            {item.type === "lost" ? "Lost" : "Found"}
+          </span>
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full ml-1 ${STATUS_COLORS[item.status] || "bg-overlay text-subtext"}`}
+          >
+            {item.status}
           </span>
         </p>
         {item.photoUrl && (

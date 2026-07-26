@@ -22,6 +22,22 @@ const CATEGORY_ICONS = {
   Bag: Backpack,
   Other: Package,
 };
+
+const STATUS_COLORS = {
+  active: "text-teal",
+  claimed: "text-yellow",
+  returned: "text-subtext",
+};
+
+const CATEGORY_COLORS = {
+  "ID Card": "bg-blue/20 text-blue",
+  Bottle: "bg-teal/20 text-teal",
+  Electronics: "bg-peach/20 text-peach",
+  Book: "bg-yellow/20 text-yellow",
+  Bag: "bg-pink/20 text-pink",
+  Other: "bg-overlay text-subtext",
+};
+
 const CATEGORIES = ["ID Card", "Bottle", "Electronics", "Book", "Bag", "Other"];
 
 export const ItemsDashboard = ({ type = "lost" }) => {
@@ -145,18 +161,24 @@ export const ItemsDashboard = ({ type = "lost" }) => {
               </h2>
 
               <div className="flex items-center gap-2 mb-2">
-                <span className="bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
-                  {(() => {
-                    const Icon = CATEGORY_ICONS[item.category] || Package;
-                    return (
-                      <span className="flex items-center gap-1 bg-overlay text-text text-xs px-2 py-0.5 rounded-full">
-                        <Icon size={12} />
-                        {item.category}
-                      </span>
-                    );
-                  })()}
+                {(() => {
+                  const Icon = CATEGORY_ICONS[item.category] || Package;
+                  const colorClass =
+                    CATEGORY_COLORS[item.category] || CATEGORY_COLORS.Other;
+                  return (
+                    <span
+                      className={`flex items-center gap-1 ${colorClass} text-xs px-2 py-0.5 rounded-full`}
+                    >
+                      <Icon size={12} />
+                      {item.category}
+                    </span>
+                  );
+                })()}
+                <span
+                  className={`text-xs font-medium ${STATUS_COLORS[item.status] || "text-subtext"}`}
+                >
+                  {item.status}
                 </span>
-                <span className="text-xs text-subtext">{item.status}</span>
               </div>
 
               <p className="text-sm text-subtext line-clamp-2 mb-2">
