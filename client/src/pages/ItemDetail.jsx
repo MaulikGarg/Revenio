@@ -196,7 +196,7 @@ export const ItemDetail = () => {
           />
         )}
         <p
-          className={`mb-2 text-text ${showFullDescription ? "" : "line-clamp-2"}`}
+          className={`mb-2 text-text wrap-break-word ${showFullDescription ? "" : "line-clamp-2"}`}
         >
           {item.description}
         </p>
