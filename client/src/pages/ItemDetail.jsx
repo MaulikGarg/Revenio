@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { Trash2 } from "lucide-react";
 
 import PageContainer from "../components/PageContainer";
 import ClaimsReviewPanel from "../components/item/ClaimsReviewPanel";
@@ -13,6 +14,7 @@ import SuggestionForm from "../components/item/SuggestionForm";
 import SuggestionsReviewPanel from "../components/item/SuggestionsReviewPanel";
 
 export const ItemDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useAuth();
   const [item, setItem] = useState(null);
@@ -84,9 +86,29 @@ export const ItemDetail = () => {
     }
   };
 
+  const handleDeleteItem = async () => {
+    if (!window.confirm("Permanently delete this item? This cannot be undone."))
+      return;
+    try {
+      await api.delete(`/items/${item._id}`);
+      navigate(isLost ? "/dashboard/lost" : "/dashboard/found");
+    } catch (error) {
+      console.error("Failed to delete item:", error);
+    }
+  };
+
   return (
     <PageContainer maxWidth="max-w-xl" className="mt-10">
-      <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm ">
+      <div className="bg-surface border border-overlay rounded-lg p-6 shadow-sm relative">
+        {isAdmin && (
+          <button
+            onClick={handleDeleteItem}
+            className="cursor-pointer inline-flex items-center gap-1 absolute top-3 right-3 text-error hover:bg-error/10 p-1.5 rounded-lg transition-colors"
+          >
+            <Trash2 size={16} />
+            Delete
+          </button>
+        )}
         <ItemHeader
           item={item}
           showFullDescription={showFullDescription}
@@ -97,7 +119,6 @@ export const ItemDetail = () => {
         <ItemActions
           item={item}
           isPoster={isPoster}
-          isAdmin={isAdmin}
           canMarkReturned={canMarkReturned}
           onMarkReturned={handleMarkReturned}
         />

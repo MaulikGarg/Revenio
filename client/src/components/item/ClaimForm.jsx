@@ -98,7 +98,7 @@ const ClaimForm = ({ item, onClaimSubmitted }) => {
       <button
         type="submit"
         disabled={claimSubmitting}
-        className="bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50"
+        className="self-center inline-flex items-center gap-1 bg-accent-500 text-white hover:bg-accent-600 p-2 rounded-lg disabled:opacity-50"
       >
         <Send size={14} />
         {claimSubmitting ? "Submitting..." : "Submit Claim"}

@@ -118,14 +118,14 @@ const ClaimsReviewPanel = ({ item, onItemUpdate }) => {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleClaimAction(claim._id, "approved")}
-                        className="inline-flex items-center gap-1s text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors font-medium cursor-pointer"
+                        className="inline-flex items-center gap-1 text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors font-medium cursor-pointer"
                       >
                         <Check size={12} />
                         Approve
                       </button>
                       <button
                         onClick={() => handleClaimAction(claim._id, "rejected")}
-                        className="inline-flex items-center gap-1s text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 transition-colors font-medium cursor-pointer"
+                        className="inline-flex items-center gap-1 text-xs bg-error/20 text-error px-3 py-1 rounded-lg hover:bg-error/30 transition-colors font-medium cursor-pointer"
                       >
                         <CircleX size={12} />
                         Reject

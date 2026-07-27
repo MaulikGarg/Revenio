@@ -55,7 +55,7 @@ const SuggestionForm = ({ item }) => {
       {!open ? (
         <button
           onClick={() => setOpen(true)}
-          className="bg-blue/20 text-blue hover:bg-blue/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="inline-flex items-center gap-1 bg-blue/20 text-blue hover:bg-blue/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
           <PackageCheck size={14} />I found this item
         </button>
@@ -81,7 +81,7 @@ const SuggestionForm = ({ item }) => {
             <button
               type="submit"
               disabled={submitting}
-              className="bg-blue/20 text-blue hover:bg-blue/30 px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
+              className="inline-flex items-center gap-1 bg-blue/20 text-blue hover:bg-blue/30 px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
             >
               <Send size={14} />
               {submitting ? "Sending..." : "Send Suggestion"}
@@ -89,7 +89,7 @@ const SuggestionForm = ({ item }) => {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="text-xs text-subtext hover:text-text"
+              className="inline-flex items-center gap-1 text-xs text-subtext hover:text-text"
             >
               <CircleX size={12} />
               Cancel
