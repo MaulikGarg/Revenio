@@ -4,11 +4,13 @@ const {
   getClaimsForItem,
   updateClaimStatus,
   deleteClaim,
+  getMyClaims,
 } = require("../controllers/claim.controller");
 const { protect, adminOnly } = require("../middleware/auth.middleware");
 
 const router = express.Router();
 
+router.get("/mine", protect, getMyClaims);
 router.get("/item/:itemId", protect, getClaimsForItem);
 router.post("/", protect, createClaim);
 router.patch("/:id", protect, updateClaimStatus);

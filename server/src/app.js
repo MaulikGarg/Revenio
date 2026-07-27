@@ -31,7 +31,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/suggestions", suggestionRoutes);
-app.use("/api/messages");
+app.use("/api/messages", messageRoutes);
 
 app.use(notFound);
 

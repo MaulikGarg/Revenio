@@ -142,9 +142,45 @@ const deleteSuggestion = async (req, res, next) => {
   }
 };
 
+const getMySuggestions = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+
+    // outgoing: suggestions I made (I'm the founder suggesting a match)
+    const outgoing = await Suggestion.find({ suggestedBy: userId })
+      .populate("foundItem", "title")
+      .populate("lostItem", "title postedBy")
+      .sort({ updatedAt: -1 });
+
+    // incoming: suggestions made on my lost items
+    const myLostItems = await Item.find({
+      postedBy: userId,
+      type: "lost",
+    }).select("_id");
+    const myLostItemIds = myLostItems.map((i) => i._id);
+
+    const incoming = await Suggestion.find({ lostItem: { $in: myLostItemIds } })
+      .populate("suggestedBy", "name")
+      .populate("foundItem", "title")
+      .sort({ updatedAt: -1 });
+
+    const tagged = [
+      ...outgoing.map((s) => ({ ...s.toObject(), direction: "outgoing" })),
+      ...incoming.map((s) => ({ ...s.toObject(), direction: "incoming" })),
+    ];
+
+    tagged.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+    res.status(200).json({ success: true, data: tagged });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createSuggestion,
   getSuggestionsForLostItem,
   dismissSuggestion,
   deleteSuggestion,
+  getMySuggestions,
 };

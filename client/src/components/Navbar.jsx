@@ -9,6 +9,7 @@ import {
   PackageCheck,
   ShieldUser,
   Package2,
+  UserCircle,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -60,23 +61,6 @@ const Navbar = () => {
               <PackageCheck size={16} />
               Found
             </Link>
-
-            {user.role === "admin" && (
-              <>
-                <span className="h-3.5 w-px bg-overlay/80" />
-                <Link
-                  to="/admin"
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-colors text-xs sm:text-sm whitespace-nowrap ${
-                    isAdminActive
-                      ? "bg-error/20 text-error font-medium"
-                      : "text-subtext hover:text-error"
-                  }`}
-                >
-                  <ShieldUser size={16} />
-                  Admin
-                </Link>
-              </>
-            )}
           </>
         )}
       </div>
@@ -84,15 +68,6 @@ const Navbar = () => {
       {/* RIGHT */}
 
       <div className="justify-self-end flex items-center gap-3">
-        {user && user.role !== "admin" && (
-          <Link
-            to="/my-items"
-            className="text-lg px-1.5 py-1 rounded-lg hover:bg-overlay cursor-pointer"
-          >
-            <Package2 size={18} />
-          </Link>
-        )}
-
         <button
           onClick={toggleTheme}
           className="text-lg px-1.5 py-1 rounded-lg hover:bg-overlay transition-colors cursor-pointer"
@@ -101,20 +76,18 @@ const Navbar = () => {
         </button>
 
         {user && (
-          <div className="border-l border-overlay pl-2 sm:pl-3">
-            <div className="flex flex-col items-end leading-tight">
-              <span className="text-xs sm:text-sm text-subtext font-medium truncate max-w-xl">
-                {user.name}
-              </span>
-              <button
-                onClick={logout}
-                className="flex items-center gap-1 text-[11px] text-subtext hover:text-error transition-colors cursor-pointer"
-              >
-                <LogOut size={11} />
-                <span className="hover:underline">Logout</span>
-              </button>
-            </div>
-          </div>
+          <Link
+            to="/dashboard"
+            className="flex items-center gap-2 pl-3 ml-1 px-3 py-1.5 rounded-lg hover:bg-overlay transition-colors group"
+          >
+            <UserCircle
+              size={20}
+              className="text-subtext group-hover:text-accent-500 transition-colors"
+            />
+            <span className="text-sm sm:text-base text-text font-semibold group-hover:underline group-hover:text-accent-500 transition-colors">
+              {user.name}
+            </span>
+          </Link>
         )}
       </div>
     </nav>

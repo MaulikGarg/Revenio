@@ -3,6 +3,7 @@ const Claim = require("../models/claim.model");
 const Suggestion = require("../models/suggestion.model");
 const Item = require("../models/item.model");
 const User = require("../models/user.model");
+const Report = require("../models/report.model");
 
 const areEqual = (id1, id2) => {
   if (!id1 || !id2) return false;
@@ -82,7 +83,7 @@ const createMessage = async (req, res, next) => {
         });
       }
     } else if (attachedReport) {
-      const report = await Report.findById(id);
+      const report = await Report.findById(attachedReport);
       if (!report)
         return res
           .status(404)

@@ -62,7 +62,7 @@ const getMyReports = async (req, res, next) => {
     const filter = { reportedBy: req.user._id };
     if (targetItem) filter.targetItem = targetItem;
     if (targetUser) filter.targetUser = targetUser;
-    const reports = await Report.find(filter).sort({ createdAt: -1 });
+    const reports = await Report.find(filter).sort({ updatedAt: -1 });
     res.status(200).json({ success: true, data: reports });
   } catch (error) {
     next(error);

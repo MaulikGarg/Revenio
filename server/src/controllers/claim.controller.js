@@ -190,9 +190,44 @@ const deleteClaim = async (req, res, next) => {
   }
 };
 
+const getMyClaims = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+
+    // outgoing: claims I made on others' items
+    const outgoing = await Claim.find({ claimantId: userId })
+      .populate("itemId", "title postedBy")
+      .sort({ updatedAt: -1 });
+
+    // incoming: claims made on items I posted
+    const myItems = await Item.find({ postedBy: userId, type: "found" }).select(
+      "_id",
+    );
+    const myItemIds = myItems.map((i) => i._id);
+
+    const incoming = await Claim.find({ itemId: { $in: myItemIds } })
+      .populate("claimantId", "name")
+      .populate("itemId", "title")
+      .sort({ updatedAt: -1 });
+
+    // tag direction so frontend can filter/badge without re-deriving it
+    const tagged = [
+      ...outgoing.map((c) => ({ ...c.toObject(), direction: "outgoing" })),
+      ...incoming.map((c) => ({ ...c.toObject(), direction: "incoming" })),
+    ];
+
+    tagged.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+    res.status(200).json({ success: true, data: tagged });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createClaim,
   getClaimsForItem,
   updateClaimStatus,
   deleteClaim,
+  getMyClaims,
 };

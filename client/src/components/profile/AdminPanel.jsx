@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import api from "../api/axios";
-import PageContainer from "../components/PageContainer";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 import {
   Users,
   Flag,
@@ -10,12 +10,14 @@ import {
   Ban,
   Check,
   CircleX,
+  MessageCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const REPORT_STATUSES = ["pending", "reviewed", "dismissed"];
 
 const AdminPanel = () => {
+  const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState("users");
 
@@ -30,6 +32,7 @@ const AdminPanel = () => {
   const [actionError, setActionError] = useState("");
   const [cleanupResult, setCleanupResult] = useState(null);
   const [cleaningUp, setCleaningUp] = useState(false);
+  const openChat = (type, id) => navigate(`/messages/${type}/${id}`);
 
   const roleColors = {
     admin: "text-error",
@@ -129,8 +132,7 @@ const AdminPanel = () => {
   };
 
   return (
-    <PageContainer maxWidth="max-w-4xl" className="py-6">
-      <h1 className="text-4xl font-heading text-text mb-6">The Admin Panel</h1>
+    <>
       <div className="flex items-center justify-between mb-6">
         <p className="text-sm text-subtext">
           Remove old resolved data to keep the database tidy.
@@ -256,28 +258,38 @@ const AdminPanel = () => {
                   key={r._id}
                   className="border border-overlay rounded-lg p-3"
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-text font-medium">
+                  <div className="flex items-start justify-between gap-4 mb-1">
+                    <span className="text-text font-medium flex-1 min-w-0">
                       {r.reportedBy?.name || "Unknown"}
                     </span>
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full ${
-                        r.status === "reviewed"
-                          ? "bg-success/20 text-success"
-                          : r.status === "dismissed"
-                            ? "bg-overlay text-subtext"
-                            : "bg-accent-500/20 text-accent-500"
-                      }`}
-                    >
-                      {r.status}
-                    </span>
+
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full ${
+                          r.status === "reviewed"
+                            ? "bg-success/20 text-success"
+                            : r.status === "dismissed"
+                              ? "bg-overlay text-subtext"
+                              : "bg-accent-500/20 text-accent-500"
+                        }`}
+                      >
+                        {r.status}
+                      </span>
+
+                      <button
+                        onClick={() => openChat("report", r._id)}
+                        className="cursor-pointer flex items-center gap-1 text-xs text-subtext hover:text-accent-500 hover:bg-overlay px-2 py-1 rounded-lg transition-colors"
+                      >
+                        <MessageCircle size={12} />
+                        Chat
+                      </button>
+                    </div>
                   </div>
 
                   <p className="text-sm text-text mb-1">{r.reason}</p>
 
                   {r.targetItem && (
                     <Link
-                      key={r.targetItem._id}
                       to={`/item/${r.targetItem._id}`}
                       className="text-xs text-blue underline"
                     >
@@ -294,16 +306,14 @@ const AdminPanel = () => {
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={() => handleReportStatus(r._id, "reviewed")}
-                        className="inline-flex items-center gap-1 text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors"
+                        className="text-xs bg-success/20 text-success px-3 py-1 rounded-lg hover:bg-success/30 transition-colors"
                       >
-                        <Check size={12} />
                         Mark Reviewed
                       </button>
                       <button
                         onClick={() => handleReportStatus(r._id, "dismissed")}
-                        className="inline-flex items-center gap-1 text-xs bg-overlay text-subtext px-3 py-1 rounded-lg hover:opacity-80 transition-colors"
+                        className="text-xs bg-overlay text-subtext px-3 py-1 rounded-lg hover:opacity-80 transition-colors"
                       >
-                        <CircleX size={12} />
                         Dismiss
                       </button>
                     </div>
@@ -314,7 +324,7 @@ const AdminPanel = () => {
           )}
         </div>
       )}
-    </PageContainer>
+    </>
   );
 };
 

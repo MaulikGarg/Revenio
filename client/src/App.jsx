@@ -7,7 +7,8 @@ import ItemDetail from "./pages/ItemDetail";
 import Navbar from "./components/Navbar";
 import ItemsDashboard from "./pages/ItemsDashboard";
 import Footer from "./components/Footer";
-import AdminPanel from "./pages/AdminPanel";
+import ProfilePanel from "./pages/ProfilePanel";
+import MessagePage from "./pages/MessagePage";
 
 function App() {
   const { user, loading } = useAuth();
@@ -18,7 +19,7 @@ function App() {
       <Navbar />
       <main className="flex-1 pb-8">
         <Routes>
-          {/*If user exists then lost page otherwise login page*/}
+          {/*If user exists  then lost page otherwise login page*/}
           <Route
             path="/login"
             element={
@@ -78,18 +79,26 @@ function App() {
             }
           />
 
-          {/*The admin panel*/}
           <Route
-            path="/admin"
+            path="/dashboard"
             element={
-              <ProtectedRoute adminOnly>
-                <AdminPanel />
+              <ProtectedRoute>
+                <ProfilePanel />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/messages/:type/:id"
+            element={
+              <ProtectedRoute>
+                <MessagePage />
               </ProtectedRoute>
             }
           />
 
           {/*All other non existent routes go to /lost*/}
-          <Route path="*" element={<Navigate to="/dashboard/lost" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </main>
       <Footer />
