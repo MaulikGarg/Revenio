@@ -1,21 +1,20 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import {
   Sun,
   Moon,
-  LogOut,
   PackageSearch,
   PackageCheck,
-  ShieldUser,
-  Package2,
   UserCircle,
+  ArrowLeft,
 } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const isLostActive = location.pathname.startsWith("/dashboard/lost");
   const isFoundActive = location.pathname.startsWith("/dashboard/found");
   const isAdminActive = location.pathname.startsWith("/admin");
@@ -23,10 +22,16 @@ const Navbar = () => {
   return (
     <nav className="grid grid-cols-3 items-center border-b border-overlay bg-surface px-4 py-2 sm:px-6 sm:py-2.5">
       {/* LEFT */}
-      <div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-1.5 rounded-lg hover:bg-overlay transition-colors cursor-pointer text-subtext hover:text-text"
+        >
+          <ArrowLeft size={18} />
+        </button>
         <Link
           to={user ? "/dashboard/lost" : "/login"}
-          className="text-xl sm:text-2xl md:text-3xl font-bold font-pixel"
+          className="hidden sm:inline text-xl sm:text-2xl md:text-3xl font-bold font-pixel"
         >
           Revenio
         </Link>
@@ -45,7 +50,7 @@ const Navbar = () => {
               }`}
             >
               <PackageSearch size={16} />
-              Lost
+              <span className="hidden sm:inline">Lost</span>
             </Link>
 
             <span className="h-3.5 w-px bg-overlay/80" />
@@ -59,7 +64,7 @@ const Navbar = () => {
               }`}
             >
               <PackageCheck size={16} />
-              Found
+              <span className="hidden sm:inline">Found</span>
             </Link>
           </>
         )}
@@ -84,7 +89,7 @@ const Navbar = () => {
               size={20}
               className="text-subtext group-hover:text-accent-500 transition-colors"
             />
-            <span className="text-sm sm:text-base text-text font-semibold group-hover:underline group-hover:text-accent-500 transition-colors">
+            <span className="text-sm hidden sm:inline text-text font-semibold group-hover:underline group-hover:text-accent-500 transition-colors">
               {user.name}
             </span>
           </Link>
