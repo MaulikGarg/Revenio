@@ -27,12 +27,6 @@ const itemSchema = new mongoose.Schema(
     },
     claimQuestion: { type: String },
     tags: [{ type: String, lowercase: true }],
-    // for "lost" items, we link this to the "found" item
-    matchedWith: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Item",
-      default: null,
-    },
   },
   { timestamps: true },
 );

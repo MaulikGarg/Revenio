@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 import PageContainer from "../components/PageContainer";
+import { useAuth } from "../context/AuthContext";
 
 import {
   IdCard,
@@ -53,6 +54,9 @@ export const ItemsDashboard = ({ type, mine = false }) => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [category, setCategory] = useState("");
   const [searchParams] = useSearchParams();
+
+  const { user } = useAuth();
+  const isAdmin = user.role === "admin";
 
   useEffect(() => {
     const qParam = searchParams.get("q");
@@ -118,7 +122,7 @@ export const ItemsDashboard = ({ type, mine = false }) => {
           <HeadingIcon size={32} className={headingColor} />
           <h1 className={`text-4xl font-heading ${headingColor}`}>{title}</h1>
         </div>
-        {!mine && (
+        {!mine && !isAdmin && (
           <Link
             to={postLink}
             className="flex items-center justify-center gap-1 bg-accent-500 text-white hover:bg-accent-600 px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto"

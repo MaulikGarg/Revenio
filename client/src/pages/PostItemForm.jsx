@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
+import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
 import {
   Calendar,
@@ -33,6 +34,11 @@ const PostItemForm = ({ type = "found" }) => {
   const [imageFile, setImageFile] = useState(null);
   const [statusText, setStatusText] = useState("Post Found Item");
   const [confirmedCheck, setConfirmedCheck] = useState(false);
+
+  const { user } = useAuth();
+  if (user.role === "admin") {
+    return <Navigate to="/dashboard/lost" replace />;
+  }
 
   const handleChange = (i) => {
     setFormData({ ...formData, [i.target.name]: i.target.value });

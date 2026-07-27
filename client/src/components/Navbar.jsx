@@ -84,7 +84,7 @@ const Navbar = () => {
       {/* RIGHT */}
 
       <div className="justify-self-end flex items-center gap-3">
-        {user && (
+        {user && user.role !== "admin" && (
           <Link
             to="/my-items"
             className="text-lg px-1.5 py-1 rounded-lg hover:bg-overlay cursor-pointer"
