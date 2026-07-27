@@ -10,6 +10,7 @@ const reportRoutes = require("./routes/report.routes");
 const adminRoutes = require("./routes/admin.routes");
 const uploadRoutes = require("./routes/upload.routes");
 const suggestionRoutes = require("./routes/suggestion.routes");
+const messageRoutes = require("./routes/message.route");
 
 const app = express();
 // '*' for wildcard if client url doesnt load
@@ -30,6 +31,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/suggestions", suggestionRoutes);
+app.use("/api/messages");
 
 app.use(notFound);
 

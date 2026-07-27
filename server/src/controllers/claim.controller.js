@@ -1,5 +1,7 @@
 const Claim = require("../models/claim.model");
 const Item = require("../models/item.model");
+const Suggestion = require("../models/suggestion.model");
+const Message = require("../models/message.model");
 
 // POST /api/claims
 const createClaim = async (req, res, next) => {
@@ -143,10 +145,18 @@ const updateClaimStatus = async (req, res, next) => {
       );
 
       if (claim.linkedLostItem) {
+        const dismissedSuggestions = await Suggestion.find({
+          lostItem: claim.linkedLostItem,
+          status: "pending",
+        }).select("_id");
+        const suggestionIds = dismissedSuggestions.map((s) => s._id);
         await Suggestion.updateMany(
           { lostItem: claim.linkedLostItem, status: "pending" },
           { status: "dismissed" },
         );
+        await Message.deleteMany({
+          attachedSuggestion: { $in: suggestionIds },
+        });
         await Item.findByIdAndDelete(claim.linkedLostItem);
       }
     }

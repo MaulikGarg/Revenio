@@ -3,6 +3,7 @@ const Item = require("../models/item.model");
 const Claim = require("../models/claim.model");
 const Report = require("../models/report.model");
 const Suggestion = require("../models/suggestion.model");
+const Message = require("../models/suggestion.model");
 
 // admin only, returns all users
 // GET /api/admin/users
@@ -44,12 +45,40 @@ const cleanupResolved = async (req, res, next) => {
     const claimsFromReturned = await Claim.deleteMany({
       itemId: { $in: returnedItemIds },
     });
+    const claimIdsFromReturned = claimsFromReturned.map((c) => c._id);
+
     const suggestionsFromReturned = await Suggestion.deleteMany({
       $or: [
         { foundItem: { $in: returnedItemIds } },
         { lostItem: { $in: returnedItemIds } },
       ],
     });
+    const suggestionIdsFromReturned = suggestionsFromReturned.map((s) => s._id);
+    const rejectedClaims = await Claim.find({ status: "rejected" }).select(
+      "_id",
+    );
+    const rejectedClaimIds = rejectedClaims.map((c) => c._id);
+
+    const dismissedSuggestions = await Suggestion.find({
+      status: "dismissed",
+    }).select("_id");
+    const dismissedSuggestionIds = dismissedSuggestions.map((s) => s._id);
+
+    const messagesDeleted = await Message.deleteMany({
+      $or: [
+        {
+          attachedClaim: {
+            $in: [...claimIdsFromReturned, ...rejectedClaimIds],
+          },
+        },
+        {
+          attachedSuggestion: {
+            $in: [...suggestionIdsFromReturned, ...dismissedSuggestionIds],
+          },
+        },
+      ],
+    });
+
     const itemsDeleted = await Item.deleteMany({ status: "returned" });
 
     // PURGE ZA LEFTOVERS!
@@ -73,6 +102,7 @@ const cleanupResolved = async (req, res, next) => {
         reports: reportsDeleted.deletedCount,
         rejectedClaims: rejectedClaimsDeleted.deletedCount,
         dismissedSuggestions: dismissedSuggestionsDeleted.deletedCount,
+        messages: messagesDeleted.deletedCount,
       },
     });
   } catch (error) {
